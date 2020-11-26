@@ -24,4 +24,9 @@ class TTTCoreTests: XCTestCase {
 		XCTAssertNotNil(GameManager.createGame())
 	}
 
+	func testGameSuppliesRules() throws {
+		let game = GameManager.createGame()
+		XCTAssert(!game.rules().isEmpty)
+	}
+
 }
