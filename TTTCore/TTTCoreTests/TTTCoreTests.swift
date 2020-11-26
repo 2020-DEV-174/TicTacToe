@@ -29,4 +29,10 @@ class TTTCoreTests: XCTestCase {
 		XCTAssert(!game.rules().isEmpty)
 	}
 
+	func testGameSpecifiesPlayerCountRange() throws {
+		let game = GameManager.createGame()
+		let counts = game.playerCountRange()
+		XCTAssert(0 < counts.min && counts.min < counts.max)
+	}
+
 }
