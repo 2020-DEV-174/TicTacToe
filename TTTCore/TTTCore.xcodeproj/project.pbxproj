@@ -9,15 +9,18 @@
 /* Begin PBXBuildFile section */
 		AE22F185256F0774007EF8B6 /* TTTCore.h in Headers */ = {isa = PBXBuildFile; fileRef = AE22F183256F0774007EF8B6 /* TTTCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AE22F193256F0803007EF8B6 /* TTTCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE22F192256F0803007EF8B6 /* TTTCoreTests.swift */; };
+		AE22F1B5257003C0007EF8B6 /* TTTCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE22F192256F0803007EF8B6 /* TTTCoreTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		AE22F180256F0774007EF8B6 /* TTTCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TTTCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE22F183256F0774007EF8B6 /* TTTCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTTCore.h; sourceTree = "<group>"; };
 		AE22F184256F0774007EF8B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AE22F190256F0803007EF8B6 /* TTTCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TTTCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE22F190256F0803007EF8B6 /* TTTCoreTests-iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TTTCoreTests-iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE22F192256F0803007EF8B6 /* TTTCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTTCoreTests.swift; sourceTree = "<group>"; };
-		AE22F194256F0803007EF8B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE22F1BB257003C0007EF8B6 /* TTTCoreTests-macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TTTCoreTests-macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE22F1CA25700591007EF8B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE22F1CC25700591007EF8B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +32,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AE22F18D256F0803007EF8B6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE22F1B6257003C0007EF8B6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -51,7 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				AE22F180256F0774007EF8B6 /* TTTCore.framework */,
-				AE22F190256F0803007EF8B6 /* TTTCoreTests.xctest */,
+				AE22F190256F0803007EF8B6 /* TTTCoreTests-iOS.xctest */,
+				AE22F1BB257003C0007EF8B6 /* TTTCoreTests-macOS.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -69,9 +80,26 @@
 			isa = PBXGroup;
 			children = (
 				AE22F192256F0803007EF8B6 /* TTTCoreTests.swift */,
-				AE22F194256F0803007EF8B6 /* Info.plist */,
+				AE22F1CB25700591007EF8B6 /* _iOS */,
+				AE22F1C925700591007EF8B6 /* _macOS */,
 			);
 			path = TTTCoreTests;
+			sourceTree = "<group>";
+		};
+		AE22F1C925700591007EF8B6 /* _macOS */ = {
+			isa = PBXGroup;
+			children = (
+				AE22F1CA25700591007EF8B6 /* Info.plist */,
+			);
+			path = _macOS;
+			sourceTree = "<group>";
+		};
+		AE22F1CB25700591007EF8B6 /* _iOS */ = {
+			isa = PBXGroup;
+			children = (
+				AE22F1CC25700591007EF8B6 /* Info.plist */,
+			);
+			path = _iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -106,9 +134,9 @@
 			productReference = AE22F180256F0774007EF8B6 /* TTTCore.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		AE22F18F256F0803007EF8B6 /* TTTCoreTests */ = {
+		AE22F18F256F0803007EF8B6 /* TTTCoreTests-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AE22F195256F0803007EF8B6 /* Build configuration list for PBXNativeTarget "TTTCoreTests" */;
+			buildConfigurationList = AE22F195256F0803007EF8B6 /* Build configuration list for PBXNativeTarget "TTTCoreTests-iOS" */;
 			buildPhases = (
 				AE22F18C256F0803007EF8B6 /* Sources */,
 				AE22F18D256F0803007EF8B6 /* Frameworks */,
@@ -118,9 +146,26 @@
 			);
 			dependencies = (
 			);
-			name = TTTCoreTests;
+			name = "TTTCoreTests-iOS";
 			productName = TTTCoreTests;
-			productReference = AE22F190256F0803007EF8B6 /* TTTCoreTests.xctest */;
+			productReference = AE22F190256F0803007EF8B6 /* TTTCoreTests-iOS.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		AE22F1B3257003C0007EF8B6 /* TTTCoreTests-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE22F1B8257003C0007EF8B6 /* Build configuration list for PBXNativeTarget "TTTCoreTests-macOS" */;
+			buildPhases = (
+				AE22F1B4257003C0007EF8B6 /* Sources */,
+				AE22F1B6257003C0007EF8B6 /* Frameworks */,
+				AE22F1B7257003C0007EF8B6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "TTTCoreTests-macOS";
+			productName = TTTCoreTests;
+			productReference = AE22F1BB257003C0007EF8B6 /* TTTCoreTests-macOS.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -155,7 +200,8 @@
 			projectRoot = "";
 			targets = (
 				AE22F17F256F0774007EF8B6 /* TTTCore */,
-				AE22F18F256F0803007EF8B6 /* TTTCoreTests */,
+				AE22F18F256F0803007EF8B6 /* TTTCoreTests-iOS */,
+				AE22F1B3257003C0007EF8B6 /* TTTCoreTests-macOS */,
 			);
 		};
 /* End PBXProject section */
@@ -169,6 +215,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AE22F18E256F0803007EF8B6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE22F1B7257003C0007EF8B6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -190,6 +243,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE22F193256F0803007EF8B6 /* TTTCoreTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE22F1B4257003C0007EF8B6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE22F1B5257003C0007EF8B6 /* TTTCoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,18 +429,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = TTTCoreTests/Info.plist;
+				INFOPLIST_FILE = TTTCoreTests/_iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.2020-DEV-174.TTTCoreTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.2020-DEV-174.TTTCoreTests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -387,15 +448,53 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = TTTCoreTests/_iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.2020-DEV-174.TTTCoreTests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AE22F1B9257003C0007EF8B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = TTTCoreTests/Info.plist;
+				INFOPLIST_FILE = TTTCoreTests/_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.2020-DEV-174.TTTCoreTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.2020-DEV-174.TTTCoreTests-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AE22F1BA257003C0007EF8B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = TTTCoreTests/_macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.2020-DEV-174.TTTCoreTests-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;
@@ -423,11 +522,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AE22F195256F0803007EF8B6 /* Build configuration list for PBXNativeTarget "TTTCoreTests" */ = {
+		AE22F195256F0803007EF8B6 /* Build configuration list for PBXNativeTarget "TTTCoreTests-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AE22F196256F0803007EF8B6 /* Debug */,
 				AE22F197256F0803007EF8B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AE22F1B8257003C0007EF8B6 /* Build configuration list for PBXNativeTarget "TTTCoreTests-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE22F1B9257003C0007EF8B6 /* Debug */,
+				AE22F1BA257003C0007EF8B6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
