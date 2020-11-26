@@ -1,6 +1,6 @@
 //
-//  TTTCoreTests.swift
-//  TTTCoreTests
+//  GameTests.swift
+//  GameTests
 //
 //  Created by 2020-DEV-174 on 25/11/2020.
 //
@@ -10,7 +10,7 @@ import TTTCore
 
 
 
-class TTTCoreTests: XCTestCase {
+class GameTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
