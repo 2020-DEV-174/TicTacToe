@@ -13,9 +13,24 @@ import Foundation
 /// A game
 public class Game {
 
+	public typealias 		Player				= String
+	public typealias 		PlayerNumber		= Int
+	public static let		noPlayerNumber		= PlayerNumber(0)
+	public private(set) var players				= [Player]()
+
 	init() {}
 
+	/// Add player
+	public func addPlayer(_ player: Player) -> PlayerNumber {
+		guard players.count <= playerCountRange().max
+		else { return Self.noPlayerNumber }
+		players.append(player)
+		return PlayerNumber(players.count)
+	}
 
+
+
+	// MARK: -
 
 	/// Rules for display to user
 	///
