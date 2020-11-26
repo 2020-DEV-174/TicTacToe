@@ -26,7 +26,7 @@ class DimensionalStorageTests: XCTestCase {
 		let dimensions = [3,3]
 		let count = dimensions.reduce(1, *)
 		let initial = Element(0)
-		let storage = DimensionalStorage<Element>(dimensions, initialValue: initial)
+		let storage = DimensionalStorage<Element>(dimensions: dimensions, initialValue: initial)
 		XCTAssertEqual(storage.dimensions, dimensions)
 		XCTAssertEqual(storage.count, count)
 	}
