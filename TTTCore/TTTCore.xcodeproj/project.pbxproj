@@ -10,6 +10,7 @@
 		AE22F185256F0774007EF8B6 /* TTTCore.h in Headers */ = {isa = PBXBuildFile; fileRef = AE22F183256F0774007EF8B6 /* TTTCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AE22F193256F0803007EF8B6 /* TTTCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE22F192256F0803007EF8B6 /* TTTCoreTests.swift */; };
 		AE22F1B5257003C0007EF8B6 /* TTTCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE22F192256F0803007EF8B6 /* TTTCoreTests.swift */; };
+		AE27F5182570106500E4BCC0 /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE27F5172570106500E4BCC0 /* GameManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +22,7 @@
 		AE22F1BB257003C0007EF8B6 /* TTTCoreTests-macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TTTCoreTests-macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE22F1CA25700591007EF8B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE22F1CC25700591007EF8B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE27F5172570106500E4BCC0 /* GameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 			children = (
 				AE22F183256F0774007EF8B6 /* TTTCore.h */,
 				AE22F184256F0774007EF8B6 /* Info.plist */,
+				AE27F5172570106500E4BCC0 /* GameManager.swift */,
 			);
 			path = TTTCore;
 			sourceTree = "<group>";
@@ -180,6 +183,7 @@
 				TargetAttributes = {
 					AE22F17F256F0774007EF8B6 = {
 						CreatedOnToolsVersion = 12.2;
+						LastSwiftMigration = 1220;
 					};
 					AE22F18F256F0803007EF8B6 = {
 						CreatedOnToolsVersion = 12.2;
@@ -235,6 +239,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE27F5182570106500E4BCC0 /* GameManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,6 +387,7 @@
 		AE22F189256F0774007EF8B6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -397,6 +403,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.2020-DEV-174.TTTCore";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -405,6 +412,7 @@
 		AE22F18A256F0774007EF8B6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
