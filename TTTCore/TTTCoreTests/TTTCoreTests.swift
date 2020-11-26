@@ -64,4 +64,19 @@ class TTTCoreTests: XCTestCase {
 		}
 		XCTAssertNotEqual(game.stage, Game.Stage.waitingForPlayers)
 	}
+
+	func testGameStageEquatability() {
+		let a: [Game.Stage] = [.waitingForPlayers, .waitingToStart, .nextPlayBy(0), .nextPlayBy(1), .wonBy(0), .wonBy(1), .drawn]
+		let b: [Game.Stage]
+		switch a.randomElement()! {
+			case .waitingForPlayers, .waitingToStart, .nextPlayBy, .wonBy, .drawn:
+				b = a
+			// break compile if new case has been added
+		}
+		for ai in a.enumerated() {
+			for bi in b.enumerated() {
+				XCTAssertEqual(ai.element == bi.element, ai.offset == bi.offset, "Equatability of \(ai.element) with \(bi.element) failed.")
+			}
+		}
+	}
 }
