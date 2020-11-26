@@ -41,4 +41,17 @@ class TTTCoreTests: XCTestCase {
 		XCTAssertNotEqual(playerNumber, Game.noPlayerNumber)
 	}
 
+	func testGameAcceptsMaximumPlayers() throws {
+		let game = GameManager.createGame()
+		var count = game.playerCountRange().max
+		var playerNumber = Game.noPlayerNumber
+		while count > 0 {
+			count -= 1
+			playerNumber = game.addPlayer(Game.Player("\(count)"))
+			XCTAssertNotEqual(playerNumber, Game.noPlayerNumber, "Player refused before maximum count")
+		}
+		playerNumber = game.addPlayer(Game.Player("2020-DEV-174"))
+		XCTAssertEqual(playerNumber, Game.noPlayerNumber, "Player added after maximum count")
+	}
+
 }
