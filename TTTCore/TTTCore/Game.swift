@@ -31,6 +31,11 @@ public class Game {
 		If all nine squares are filled and neither player has three in a row, the game is a draw.
 		"""
 	}
+
+	/// Possible numbers of players
+	public func playerCountRange() -> (min: Int, max: Int) {
+		(min: 1, max: 2)
+	}
 }
 
 
