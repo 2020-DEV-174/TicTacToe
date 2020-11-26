@@ -18,6 +18,11 @@ public class Game {
 	public static let		noPlayerNumber		= PlayerNumber(0)
 	public private(set) var players				= [Player]()
 
+	public enum Stage {
+		case waitingForPlayers, waitingToStart, nextPlayBy(PlayerNumber), wonBy(PlayerNumber), drawn
+	}
+	public private(set) var stage				= Stage.waitingForPlayers
+
 	init() {}
 
 	/// Add player
@@ -25,6 +30,9 @@ public class Game {
 		guard players.count < playerCountRange().max
 		else { return Self.noPlayerNumber }
 		players.append(player)
+		if players.count >= playerCountRange().min {
+			stage = .waitingToStart
+		}
 		return PlayerNumber(players.count)
 	}
 
@@ -51,6 +59,29 @@ public class Game {
 	public func playerCountRange() -> (min: Int, max: Int) {
 		(min: 1, max: 2)
 	}
+}
+
+
+
+extension Game.Stage : Equatable, CustomStringConvertible {
+
+	public var description: String { switch self {
+		case .waitingForPlayers:							return "waitingForPlayers"
+		case .waitingToStart:								return "readyToStart"
+		case .nextPlayBy(let pn):							return "nextPlayBy(Player \(pn))"
+		case .wonBy(let pn):								return "wonBy(Player \(pn))"
+		case .drawn:										return "draw"
+	} }
+
+	public static func ==(lhs: Self, rhs: Self) -> Bool { switch (lhs, rhs) {
+		case (.waitingForPlayers, .waitingForPlayers),
+			 (.waitingToStart, .waitingToStart),
+			 (.drawn, .drawn):								return true
+		case (.nextPlayBy(let lpn), .nextPlayBy(let rpn)):	return lpn == rpn
+		case (.wonBy(let lpn), .wonBy(let rpn)):			return lpn == rpn
+		default:											return false
+	} }
+
 }
 
 
