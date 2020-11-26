@@ -1,5 +1,5 @@
 //
-//  GameManager.swift
+//  Game.swift
 //  TTTCore
 //
 //  Created by 2020-DEV-174 on 26/11/2020.
@@ -10,14 +10,9 @@ import Foundation
 
 
 
-/// Supplier of new games
-public struct GameManager {
-
-	public static func createGame() -> Game {
-		Game()
-	}
+/// A game
+public class Game {
 
 }
-
 
 

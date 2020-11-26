@@ -11,6 +11,7 @@
 		AE22F193256F0803007EF8B6 /* TTTCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE22F192256F0803007EF8B6 /* TTTCoreTests.swift */; };
 		AE22F1B5257003C0007EF8B6 /* TTTCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE22F192256F0803007EF8B6 /* TTTCoreTests.swift */; };
 		AE27F5182570106500E4BCC0 /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE27F5172570106500E4BCC0 /* GameManager.swift */; };
+		AE27F51D257012DC00E4BCC0 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE27F51C257012DC00E4BCC0 /* Game.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +24,7 @@
 		AE22F1CA25700591007EF8B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE22F1CC25700591007EF8B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE27F5172570106500E4BCC0 /* GameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
+		AE27F51C257012DC00E4BCC0 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +77,7 @@
 				AE22F183256F0774007EF8B6 /* TTTCore.h */,
 				AE22F184256F0774007EF8B6 /* Info.plist */,
 				AE27F5172570106500E4BCC0 /* GameManager.swift */,
+				AE27F51C257012DC00E4BCC0 /* Game.swift */,
 			);
 			path = TTTCore;
 			sourceTree = "<group>";
@@ -240,6 +243,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE27F5182570106500E4BCC0 /* GameManager.swift in Sources */,
+				AE27F51D257012DC00E4BCC0 /* Game.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
