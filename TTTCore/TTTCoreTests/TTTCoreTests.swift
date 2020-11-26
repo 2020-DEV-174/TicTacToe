@@ -54,4 +54,14 @@ class TTTCoreTests: XCTestCase {
 		XCTAssertEqual(playerNumber, Game.noPlayerNumber, "Player added after maximum count")
 	}
 
+	func testGameStageShouldBeWaitingUntilThereAreEnoughPlayers() {
+		let game = GameManager.createGame()
+		var count = game.playerCountRange().min
+		while count > 0 {
+			XCTAssertEqual(game.stage, Game.Stage.waitingForPlayers)
+			count -= 1
+			_ = game.addPlayer(Game.Player("\(count)"))
+		}
+		XCTAssertNotEqual(game.stage, Game.Stage.waitingForPlayers)
+	}
 }
