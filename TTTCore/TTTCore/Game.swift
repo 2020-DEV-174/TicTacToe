@@ -22,7 +22,7 @@ public class Game {
 
 	/// Add player
 	public func addPlayer(_ player: Player) -> PlayerNumber {
-		guard players.count <= playerCountRange().max
+		guard players.count < playerCountRange().max
 		else { return Self.noPlayerNumber }
 		players.append(player)
 		return PlayerNumber(players.count)
