@@ -35,4 +35,10 @@ class TTTCoreTests: XCTestCase {
 		XCTAssert(0 < counts.min && counts.min < counts.max)
 	}
 
+	func testGameAcceptsOnePlayer() throws {
+		let game = GameManager.createGame()
+		let playerNumber = game.addPlayer(Game.Player("2020-DEV-174"))
+		XCTAssertNotEqual(playerNumber, Game.noPlayerNumber)
+	}
+
 }
