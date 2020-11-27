@@ -142,4 +142,32 @@ class GameTests: XCTestCase {
 		XCTAssertEqual(state.board[position], player1, "Board square not occupied by player that played there")
 	}
 
+	func testPlayer1PlaysFirstMoveinSquare1GivesStateWaitingForPlayer2AndAllButFirstSquarePlayable() {
+		let game = GameManager.createGame()
+		let player1 = game.addPlayer(Game.Player("Player 1"))
+		let player2 = game.addPlayer(Game.Player("Player 2"))
+		while game.stage == .waitingForPlayers {
+			_ = game.addPlayer(Game.Player("\(game.players.count)"))
+		}
+		var result: Result<Game.State, Game.Issue>
+		result = game.start()
+		guard case .success = result else {
+			XCTFail("Game start prevented by \(result)")
+			return
+		}
+
+		//
+		let position = [0,0]
+		result = game.play(player1, at: position)
+
+		//
+		guard case .success(let state) = result else {
+			XCTFail("Player 1 move prevented because \(result)")
+			return
+		}
+		XCTAssertEqual(state.stage, .nextPlayBy(player2))
+		XCTAssertFalse(state.playable[position])
+		XCTAssertEqual(state.playable.count, state.board.count - 1)
+	}
+
 }
