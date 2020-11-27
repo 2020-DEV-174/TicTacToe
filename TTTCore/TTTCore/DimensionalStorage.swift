@@ -14,22 +14,57 @@ import Foundation
 ///
 public struct DimensionalStorage<Element> {
 
-	var storage:			[Element]
-	public let dimensions:	[Int]
-	public var count:		Int { storage.count }
+	public typealias 		Index = Array<Element>.Index
+	public typealias 		Position = [Index]
 
-	public init(dimensions d: [Int], initialValue iv: Element) {
+	var storage:			[Element]
+	let increments:			[Index]
+	public let dimensions:	[Index]
+	public var count:		Index { storage.count }
+
+	public init(dimensions d: [Index], initialValue iv: Element) {
 		let capacity = d.reduce(1, *)
 		dimensions = d
 		storage = [Element](repeating: iv, count: capacity)
+		var increment: Index = 1
+		increments = d.map { let i = increment; increment *= $0 ; return i }
 	}
+
+	// Element Addressing: Indeces <-> Positions
+
+	public func indexOf(position: Position) -> Index {
+		precondition(position.count == dimensions.count, "Position has incompatible count of dimensions")
+		var i = 0, index = 0
+		while i < dimensions.count {
+			let p = position[i]
+			precondition(0 <= p && p < dimensions[i], "Position out of range")
+			index += p * increments[i]
+			i += 1
+		}
+		return index
+	}
+
+	public func positionOf(index: Index) -> Position {
+		precondition(0 <= index && index < storage.count, "Index out of range")
+		var remaining = index
+		var position = increments
+		var i = position.count
+		while i > 0 {
+			i -= 1
+			let (q, r) = remaining.quotientAndRemainder(dividingBy: increments[i])
+			position[i] = q
+			remaining = r
+		}
+		return position
+	}
+
 }
 
 
 
 extension DimensionalStorage where Element : AdditiveArithmetic {
 
-	public init(dimensions d: [Int]) {
+	public init(dimensions d: [Index]) {
 		self.init(dimensions: d, initialValue: Element.zero)
 	}
 
