@@ -115,8 +115,8 @@ class DimensionalStorageTests: XCTestCase {
 
 		let storage = DimensionalStorage<Int>(dimensions: [3,3])
 
-		func test(anchor pos: [Int], direction dir: [DimensionalStorage.Move], expect: [Int]) {
-			let positions = storage.positions(intersecting: pos, incrementing: dir)
+		func test(anchor pos: [Int], direction dir: [DimensionalStorage<Int>.Move], expect: [Int]) {
+			let positions = storage.positions(moving: dir, through: pos)
 			XCTAssertNotNil(positions.firstIndex(of: pos), "Positions does not go through anchor position \(pos)")
 			let indeces = positions.map { storage.indexOf(position: $0) }
 			XCTAssertEqual(indeces, expect, "Expected indeces running \(dir) through \(pos) would be \(expect), but got \(indeces) instead")
@@ -126,15 +126,24 @@ class DimensionalStorageTests: XCTestCase {
 		//   3 4 5
 		//   6 7 8 ]
 		test(anchor: [0,0], direction: [.fixed, .fixed], expect: [0])
+		// horz
 		test(anchor: [0,0], direction: [.ascend, .fixed], expect: [0,1,2])
-		test(anchor: [0,0], direction: [.fixed, .ascend], expect: [0,3,6])
 		test(anchor: [1,0], direction: [.ascend, .fixed], expect: [0,1,2])
 		test(anchor: [2,0], direction: [.ascend, .fixed], expect: [0,1,2])
+		test(anchor: [1,1], direction: [.ascend, .fixed], expect: [3,4,5])
+		test(anchor: [1,2], direction: [.ascend, .fixed], expect: [6,7,8])
+		test(anchor: [1,2], direction: [.descend, .fixed], expect: [8,7,6])
+		// vert
+		test(anchor: [0,0], direction: [.fixed, .ascend], expect: [0,3,6])
+		test(anchor: [1,1], direction: [.fixed, .ascend], expect: [1,4,7])
+		test(anchor: [1,2], direction: [.fixed, .descend], expect: [7,4,1])
+		// diag
+		test(anchor: [1,0], direction: [.ascend, .ascend], expect: [1,5])
+		test(anchor: [1,2], direction: [.descend, .descend], expect: [7,3])
 		test(anchor: [0,0], direction: [.ascend, .ascend], expect: [0,4,8])
 		test(anchor: [2,2], direction: [.ascend, .ascend], expect: [0,4,8])
 		test(anchor: [2,2], direction: [.descend, .descend], expect: [8,4,0])
-		test(anchor: [1,1], direction: [.ascend, .fixed], expect: [3,4,5])
-		test(anchor: [1,1], direction: [.fixed, .ascend], expect: [1,4,7])
+		test(anchor: [0,0], direction: [.descend, .descend], expect: [8,4,0])
 	}
 
 }

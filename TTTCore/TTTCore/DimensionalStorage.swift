@@ -67,6 +67,16 @@ public struct DimensionalStorage<Element> {
 		return position
 	}
 
+	public func contains(position: Position) -> Bool {
+		var i = dimensions.count
+		while i > 0 {
+			i -= 1
+			let p = position[i]
+			guard 0 <= p, p < dimensions[i] else { return false }
+		}
+		return true
+	}
+
 	// Element Access
 
 	public subscript(_ p: Position) -> Element {
@@ -79,6 +89,65 @@ public struct DimensionalStorage<Element> {
 			storage[i] = newValue
 		}
 	}
+
+	// Iteration
+
+	public enum Move : Int, CustomStringConvertible {
+		case descend = -1, fixed = 0, ascend = 1
+		public init?(rawValue: Int) { switch rawValue {
+			case 1... :		self = .ascend
+			case 0:			self = .fixed
+			default:		self = .descend
+		} }
+		public var inverse: Self { switch self {
+			case .ascend:	return .descend
+			case .fixed:	return .fixed
+			case .descend:	return .ascend
+		} }
+		public var description: String { switch self {
+			case .ascend:	return ".ascend"
+			case .fixed:	return ".fixed"
+			case .descend:	return ".descend"
+		} }
+		public var increment: Int { rawValue }
+		public var distance: Int { abs(rawValue) }
+	}
+
+	/// Provide the sequence of positions traversing from one side, through the supplied anchor
+	/// position, and to the other side of the dimensional space, in the supplied direction of
+	/// movement.
+	///
+	/// Note that if the movement is fixed in all directions, then only the anchor point is
+	/// returned.
+	public func positions(moving move: [Move], through anchor: Position) -> [Position] {
+		precondition(anchor.count == dimensions.count, "Position incompatible with dimensions")
+		precondition(move.count == dimensions.count, "Movement vector incompatible with dimensions")
+
+		var positions: [Position] = [anchor]
+
+		guard 0 < move.reduce(0, { $0 + $1.distance }) else { return positions }
+
+		func positionsToEdge(from pos: Position, move: [Move]) -> [Position] {
+			var pp = [Position]()
+			var p =  pos
+			repeat {
+				var i = dimensions.count
+				while i > 0 {
+					i -= 1
+					p[i] += move[i].increment
+				}
+				guard contains(position: p) else { break }
+				pp.append(p)
+			} while true
+			return pp
+		}
+
+		positions += positionsToEdge(from: anchor, move: move)
+		positions = positionsToEdge(from: anchor, move: move.map {$0.inverse} ).reversed() + positions
+
+		return positions
+	}
+
 }
 
 
