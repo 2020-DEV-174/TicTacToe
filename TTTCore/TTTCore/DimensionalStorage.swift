@@ -14,14 +14,15 @@ import Foundation
 ///
 public struct DimensionalStorage<Element> {
 
-	public typealias 		Index = Array<Element>.Index
-	public typealias 		Position = [Index]
-	public typealias 		Dimensions = [Index]
+	public typealias 			Index = Array<Element>.Index
+	public typealias 			Position = [Index]
+	public typealias 			Dimensions = [Index]
 
-	var storage:			[Element]
-	let increments:			Dimensions
-	public let dimensions:	Dimensions
-	public var count:		Index { storage.count }
+	@usableFromInline
+	private(set) var storage:	[Element]
+	let increments:				Dimensions
+	public let dimensions:		Dimensions
+	public var count:			Index { storage.count }
 
 	public init(dimensions d: Dimensions, initialValue v: Element) {
 		let capacity = d.reduce(1, *)
@@ -80,7 +81,8 @@ public struct DimensionalStorage<Element> {
 
 	// Element Access
 
-	public subscript(_ p: Position) -> Element {
+	@inlinable
+	public subscript(p: Position) -> Element {
 		get {
 			let i = indexOf(position: p)
 			return storage[i]
@@ -89,6 +91,26 @@ public struct DimensionalStorage<Element> {
 			let i = indexOf(position: p)
 			storage[i] = newValue
 		}
+	}
+
+	@inlinable
+	public subscript(i: Index) -> Element {
+		get {
+			return storage[i]
+		}
+		mutating set {
+			storage[i] = newValue
+		}
+	}
+
+	public mutating func transformEach(by transform: (Element, Index) -> Element) -> Void {
+		for i in 0 ..< storage.count {
+			storage[i] = transform(storage[i], i)
+		}
+	}
+
+	public func count(where test: (Element)->Bool) -> Int {
+		var n = 0 ; storage.forEach { n += test($0) ? 1 : 0 } ; return n
 	}
 
 	// Iteration
@@ -157,6 +179,16 @@ extension DimensionalStorage where Element : AdditiveArithmetic {
 
 	public init(dimensions d: Dimensions) {
 		self.init(dimensions: d, initialValue: Element.zero)
+	}
+
+}
+
+
+
+extension DimensionalStorage where Element : Equatable {
+
+	public func count(of element: Element) -> Int {
+		var n = 0 ; storage.forEach { n += $0 == element ? 1 : 0 } ; return n
 	}
 
 }

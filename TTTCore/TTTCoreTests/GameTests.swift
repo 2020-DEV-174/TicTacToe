@@ -112,7 +112,7 @@ class GameTests: XCTestCase {
 		XCTAssertEqual(state.board.dimensions, [3,3])
 		XCTAssert(state.board.isEmpty)
 		XCTAssertEqual(state.stage, .nextPlayBy(1))
-		XCTAssertEqual(state.playable.count, state.board.count)
+		XCTAssertEqual(state.playable.count(of: true), state.board.count)
 	}
 
 	func testPlayer1PlaysFirstMoveinFirstSquareGivesStateWithFirstSquareOccupiedByPlayer1() {
@@ -167,7 +167,7 @@ class GameTests: XCTestCase {
 		}
 		XCTAssertEqual(state.stage, .nextPlayBy(player2))
 		XCTAssertFalse(state.playable[position])
-		XCTAssertEqual(state.playable.count, state.board.count - 1)
+		XCTAssertEqual(state.playable.count(of: true), state.board.count - 1)
 	}
 
 }

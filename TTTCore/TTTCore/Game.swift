@@ -24,13 +24,22 @@ public class Game {
 		public var dimensions:	Storage.Dimensions { storage.dimensions }
 		public var count:		Storage.Index { storage.count }
 		public var isEmpty: 	Bool { nil == storage.storage.first(where: {$0 != Game.noPlayerNumber}) }
-		public subscript(_ p: Position) -> PlayerNumber {
+		@inlinable
+		public subscript(p: Position) -> PlayerNumber {
 			get { storage[p] }
 			mutating set { if storage[p] != newValue {
 				storage[p] = newValue
 			} }
 		}
+		@inlinable
+		public subscript(i: Storage.Index) -> PlayerNumber {
+			get { storage[i] }
+			mutating set { if storage[i] != newValue {
+				storage[i] = newValue
+			} }
+		}
 
+		@usableFromInline
 		var storage:			Storage
 
 		init(dimensions d: Storage.Dimensions = [3,3]) {
@@ -103,7 +112,14 @@ public class Game {
 			case .waitingForPlayers:		return .failure(.notEnoughPlayers)
 			default:						return .failure(.alreadyStarted)
 		}
-		stage = .nextPlayBy(1)
+
+		let nextPlayerNumber = 1
+
+		var playable = state.playable
+		playable.transformEach { (_,_) in return true }
+
+		state = state.updating(stage: .nextPlayBy(nextPlayerNumber), playable: playable)
+
 		return .success(state)
 	}
 
@@ -119,9 +135,15 @@ public class Game {
 
 		let nextPlayerIndex = (playerIndex + 1) % players.count
 		let nextPlayerNumber = PlayerNumber(nextPlayerIndex + 1)
-		var nextBoard = state.board
-		nextBoard[position] = playerNumber
-		state = state.updating(stage: .nextPlayBy(nextPlayerNumber), board: nextBoard)
+
+		var board = state.board
+		board[position] = playerNumber
+
+		var playable = state.playable
+		playable.transformEach { board[$1] == Self.noPlayerNumber }
+
+		state = state.updating(stage: .nextPlayBy(nextPlayerNumber), board: board, playable: playable)
+
 		return .success(state)
 	}
 
