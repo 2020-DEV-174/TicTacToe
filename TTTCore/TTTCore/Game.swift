@@ -17,6 +17,28 @@ public class Game {
 		case notEnoughPlayers, alreadyStarted
 	}
 
+	public struct Board {
+		public let dimensions	= [3,3]
+		public let count		= 9
+		public var isEmpty: 	Bool { true }
+	}
+
+	public struct State {
+		public typealias Playable = [Int]
+		public let stage:		Stage
+		public let board:		Board
+		public let playable:	Playable
+		init() {
+			stage = .waitingForPlayers ; board = Board() ; playable = [Int](0..<9)
+		}
+		init(stage s: Stage, board b: Board, playable p: Playable) {
+			stage = s ; board = b ; playable = p
+		}
+		func updating(stage s: Stage? = nil, board b: Board? = nil, playable p: Playable? = nil) -> Self {
+			State(stage: s ?? stage, board: b ?? board, playable: p ?? playable)
+		}
+	}
+
 	public typealias 		Player				= String
 	public typealias 		PlayerNumber		= Int
 	public static let		noPlayerNumber		= PlayerNumber(0)
@@ -25,7 +47,16 @@ public class Game {
 	public enum Stage {
 		case waitingForPlayers, waitingToStart, nextPlayBy(PlayerNumber), wonBy(PlayerNumber), drawn
 	}
-	public private(set) var stage				= Stage.waitingForPlayers
+
+	public private(set) var stage				: Stage {
+		get { state.stage }
+		set {
+			guard state.stage != newValue else { return }
+			state = state.updating(stage: newValue)
+		}
+	}
+
+	public private(set) var state				= State()
 
 	init() {}
 
@@ -44,14 +75,14 @@ public class Game {
 
 	// MARK: -
 
-	public func start() -> Result<Int, Issue> {
+	public func start() -> Result<State, Issue> {
 		switch stage {
 			case .waitingToStart:			break
 			case .waitingForPlayers:		return .failure(.notEnoughPlayers)
 			default:						return .failure(.alreadyStarted)
 		}
 		stage = .nextPlayBy(1)
-		return .success(0)
+		return .success(state)
 	}
 
 	// MARK: -
