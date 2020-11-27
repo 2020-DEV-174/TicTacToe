@@ -77,5 +77,27 @@ class DimensionalStorageTests: XCTestCase {
 		test(with: [3,4,5])
 	}
 
+	func testAccessExpectedValuesByPosition() {
+
+		func test(with dimensions: [Int]) {
+			let count = dimensions.reduce(1, *)
+			let initial = [Int](sequence(state: 0, next: { $0 += 1 ; return $0 <= count ? $0 : nil }))
+			let storage = DimensionalStorage<Int>(dimensions: dimensions, initialValues: initial)
+
+			for e in initial.enumerated() {
+				let position = storage.positionOf(index: e.offset)
+				let value = storage[position]
+
+				XCTAssertEqual(e.element, value, "Unexpected value at index \(e.offset), position \(position)")
+			}
+		}
+
+		test(with: [0])
+		test(with: [1])
+		test(with: [2])
+		test(with: [2,3])
+		test(with: [3,4,5])
+	}
+
 }
 
