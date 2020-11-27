@@ -84,7 +84,7 @@ class GameTests: XCTestCase {
 		let game = GameManager.createGame()
 		while game.stage == .waitingForPlayers {
 			let result1 = game.start()
-			if case .failure(.waitingForPlayers) = result1 {/*expected*/} else {
+			if case .failure(.notEnoughPlayers) = result1 {/*expected*/} else {
 				XCTFail("Expected game start prevented because waiting for players, but got \(result1)")
 			}
 			_ = game.addPlayer(Game.Player("\(game.players.count)"))
@@ -92,6 +92,10 @@ class GameTests: XCTestCase {
 		let result2 = game.start()
 		if case .success = result2 {/*expected*/} else {
 			XCTFail("Expected game to start; prevented by \(result2)")
+		}
+		let result3 = game.start()
+		if case .failure(.alreadyStarted) = result3 {/*expected*/} else {
+			XCTFail("Expected game already started, but got \(result3)")
 		}
 	}
 

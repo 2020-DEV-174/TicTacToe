@@ -13,6 +13,10 @@ import Foundation
 /// A game
 public class Game {
 
+	public enum Issue : Error {
+		case notEnoughPlayers, alreadyStarted
+	}
+
 	public typealias 		Player				= String
 	public typealias 		PlayerNumber		= Int
 	public static let		noPlayerNumber		= PlayerNumber(0)
@@ -37,6 +41,18 @@ public class Game {
 	}
 
 
+
+	// MARK: -
+
+	public func start() -> Result<Int, Issue> {
+		switch stage {
+			case .waitingToStart:			break
+			case .waitingForPlayers:		return .failure(.notEnoughPlayers)
+			default:						return .failure(.alreadyStarted)
+		}
+		stage = .nextPlayBy(1)
+		return .success(0)
+	}
 
 	// MARK: -
 
@@ -82,6 +98,15 @@ extension Game.Stage : Equatable, CustomStringConvertible {
 		default:											return false
 	} }
 
+}
+
+
+
+extension Game.Issue : CustomStringConvertible {
+	public var description: String { switch self {
+		case .notEnoughPlayers:								return "notEnoughPlayers"
+		case .alreadyStarted:								return "alreadyStarted"
+	} }
 }
 
 
