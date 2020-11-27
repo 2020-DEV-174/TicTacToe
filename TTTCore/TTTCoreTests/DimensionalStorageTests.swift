@@ -99,5 +99,17 @@ class DimensionalStorageTests: XCTestCase {
 		test(with: [3,4,5])
 	}
 
+	func testWriteReadConsistency() {
+
+		var storage = DimensionalStorage<Int>(dimensions: [3,4])
+
+		for i in 0 ..< storage.count {
+			let position = storage.positionOf(index: i)
+			storage[position] = i + 1
+
+			XCTAssertEqual(i + 1, storage[position])
+		}
+	}
+
 }
 
