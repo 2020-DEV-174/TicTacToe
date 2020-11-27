@@ -11,7 +11,7 @@ import Foundation
 
 
 /// A game
-public class Game {
+public class Game : Codable {
 
 	public enum Issue : Error {
 		case notEnoughPlayers, alreadyStarted, notAPlayer, notYourTurn, cantPlayThere
@@ -19,7 +19,7 @@ public class Game {
 
 	public typealias Outcome = Result<State, Issue>
 
-	public struct Board {
+	public struct Board : Codable {
 
 		public var dimensions:	Storage.Dimensions { storage.dimensions }
 		public var count:		Storage.Index { storage.count }
@@ -50,7 +50,7 @@ public class Game {
 		public typealias		Position = Storage.Position
 	}
 
-	public struct State {
+	public struct State : Codable {
 
 		public let stage:		Stage
 		public let board:		Board
@@ -172,14 +172,14 @@ public class Game {
 
 
 
-extension Game.Stage : Equatable, CustomStringConvertible {
+extension Game.Stage : Equatable, CustomStringConvertible, Codable {
 
 	public var description: String { switch self {
 		case .waitingForPlayers:							return "waitingForPlayers"
 		case .waitingToStart:								return "readyToStart"
 		case .nextPlayBy(let pn):							return "nextPlayBy(Player \(pn))"
 		case .wonBy(let pn):								return "wonBy(Player \(pn))"
-		case .drawn:										return "draw"
+		case .drawn:										return "drawn"
 	} }
 
 	public static func ==(lhs: Self, rhs: Self) -> Bool { switch (lhs, rhs) {
@@ -190,6 +190,37 @@ extension Game.Stage : Equatable, CustomStringConvertible {
 		case (.wonBy(let lpn), .wonBy(let rpn)):			return lpn == rpn
 		default:											return false
 	} }
+
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.singleValueContainer()
+		let representation = try container.decode(String.self)
+		switch representation {
+			case "waitingForPlayers":	self = .waitingForPlayers ; return
+			case "waitingToStart":		self = .waitingToStart ; return
+			case "drawn":				self = .drawn ; return
+			default:
+				let parts = representation.split(separator: ":")
+				if parts.count == 2, let n = Game.PlayerNumber(parts[1]) { switch parts[0] {
+					case "nextPlayBy":	self = .nextPlayBy(n) ; return
+					case "wonBy":		self = .wonBy(n) ; return
+					default:			break
+				} }
+		}
+		throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode a Game.Stage from '\(representation)'")
+	}
+
+	public func encode(to encoder: Encoder) throws {
+		var container = encoder.singleValueContainer()
+		var representation: String
+		switch self {
+			case .waitingForPlayers:	representation = "waitingForPlayers"
+			case .waitingToStart:		representation = "waitingToStart"
+			case .nextPlayBy(let n):	representation = "nextPlayBy:\(n)"
+			case .wonBy(let n):			representation = "wonBy:\(n)"
+			case .drawn:				representation = "drawn"
+		}
+		try container.encode(representation)
+	}
 
 }
 

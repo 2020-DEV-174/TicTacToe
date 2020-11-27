@@ -197,6 +197,7 @@ class GameTests: XCTestCase {
 		do {
 			data1 = try JSONEncoder().encode(game)
 			game2 = try JSONDecoder().decode(Game.self, from: data1)
+			data2 = try JSONEncoder().encode(game2)
 		}
 		catch {
 			XCTFail(error.localizedDescription)

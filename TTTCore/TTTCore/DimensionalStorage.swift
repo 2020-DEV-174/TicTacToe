@@ -192,3 +192,10 @@ extension DimensionalStorage where Element : Equatable {
 	}
 
 }
+
+
+
+extension DimensionalStorage : Codable where Element : Codable {
+}
+
+
