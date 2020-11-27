@@ -99,4 +99,20 @@ class GameTests: XCTestCase {
 		}
 	}
 
+	func testGameStateOfStartedGameIsEmptyBoardWithFirstPlayerToPlayAnywhere() {
+		let game = GameManager.createGame()
+		while game.stage == .waitingForPlayers {
+			_ = game.addPlayer(Game.Player("\(game.players.count)"))
+		}
+		let result = game.start()
+		guard case .success(let state) = result else {
+			XCTFail("Game start prevented by \(result)")
+			return
+		}
+		XCTAssertEqual(state.board.dimensions, [3,3])
+		XCTAssert(state.board.isEmpty)
+		XCTAssertEqual(state.stage, .nextPlayBy(1))
+		XCTAssertEqual(state.playable.count, state.board.count)
+	}
+
 }
