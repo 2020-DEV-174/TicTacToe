@@ -10,7 +10,7 @@ import Foundation
 
 
 
-/// Stores elements of a several dimensional space.
+/// Stores elements of a several dimensional space and provides access utilities.
 ///
 public struct DimensionalStorage<Element> {
 
@@ -22,10 +22,19 @@ public struct DimensionalStorage<Element> {
 	public let dimensions:	[Index]
 	public var count:		Index { storage.count }
 
-	public init(dimensions d: [Index], initialValue iv: Element) {
+	public init(dimensions d: [Index], initialValue v: Element) {
 		let capacity = d.reduce(1, *)
 		dimensions = d
-		storage = [Element](repeating: iv, count: capacity)
+		storage = [Element](repeating: v, count: capacity)
+		var increment: Index = 1
+		increments = d.map { let i = increment; increment *= $0 ; return i }
+	}
+
+	public init(dimensions d: [Index], initialValues v: [Element]) {
+		let capacity = d.reduce(1, *)
+		precondition(v.count == capacity, "Initial values have incompatible count of dimensions \(d)")
+		dimensions = d
+		storage = v
 		var increment: Index = 1
 		increments = d.map { let i = increment; increment *= $0 ; return i }
 	}
@@ -58,6 +67,18 @@ public struct DimensionalStorage<Element> {
 		return position
 	}
 
+	// Element Access
+
+	public subscript(_ p: Position) -> Element {
+		get {
+			let i = indexOf(position: p)
+			return storage[i]
+		}
+		mutating set {
+			let i = indexOf(position: p)
+			storage[i] = newValue
+		}
+	}
 }
 
 
