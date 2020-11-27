@@ -119,6 +119,7 @@ class GameTests: XCTestCase {
 		let game = GameManager.createGame()
 		let player1 = game.addPlayer(Game.Player("Player 1"))
 		let player2 = game.addPlayer(Game.Player("Player 2"))
+		_ = player2
 		while game.stage == .waitingForPlayers {
 			_ = game.addPlayer(Game.Player("\(game.players.count)"))
 		}

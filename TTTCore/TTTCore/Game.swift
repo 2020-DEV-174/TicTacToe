@@ -14,24 +14,43 @@ import Foundation
 public class Game {
 
 	public enum Issue : Error {
-		case notEnoughPlayers, alreadyStarted
+		case notEnoughPlayers, alreadyStarted, notAPlayer, notYourTurn, cantPlayThere
 	}
 
 	public typealias Outcome = Result<State, Issue>
 
 	public struct Board {
-		public let dimensions	= [3,3]
-		public let count		= 9
-		public var isEmpty: 	Bool { true }
+
+		public var dimensions:	Storage.Dimensions { storage.dimensions }
+		public var count:		Storage.Index { storage.count }
+		public var isEmpty: 	Bool { nil == storage.storage.first(where: {$0 != Game.noPlayerNumber}) }
+		public subscript(_ p: Position) -> PlayerNumber {
+			get { storage[p] }
+			mutating set { if storage[p] != newValue {
+				storage[p] = newValue
+			} }
+		}
+
+		var storage:			Storage
+
+		init(dimensions d: Storage.Dimensions = [3,3]) {
+			storage = Storage(dimensions: d, initialValue: Game.noPlayerNumber)
+		}
+
+		public typealias		Storage = DimensionalStorage<PlayerNumber>
+		public typealias		Position = Storage.Position
 	}
 
 	public struct State {
-		public typealias Playable = [Int]
+
 		public let stage:		Stage
 		public let board:		Board
 		public let playable:	Playable
+
 		init() {
-			stage = .waitingForPlayers ; board = Board() ; playable = [Int](0..<9)
+			stage = .waitingForPlayers
+			board = Board()
+			playable = Playable(dimensions: board.storage.dimensions, initialValue: true)
 		}
 		init(stage s: Stage, board b: Board, playable p: Playable) {
 			stage = s ; board = b ; playable = p
@@ -39,6 +58,7 @@ public class Game {
 		func updating(stage s: Stage? = nil, board b: Board? = nil, playable p: Playable? = nil) -> Self {
 			State(stage: s ?? stage, board: b ?? board, playable: p ?? playable)
 		}
+		public typealias		Playable = DimensionalStorage<Bool>
 	}
 
 	public typealias 		Player				= String
@@ -84,6 +104,24 @@ public class Game {
 			default:						return .failure(.alreadyStarted)
 		}
 		stage = .nextPlayBy(1)
+		return .success(state)
+	}
+
+	public func play(_ playerNumber: PlayerNumber, at position: Board.Position) -> Outcome {
+		let playerIndex = playerNumber - 1
+
+		guard 0 <= playerIndex, playerIndex < players.count
+		else { return .failure(.notAPlayer) }
+		guard case .nextPlayBy(playerNumber) = state.stage
+		else { return .failure(.notYourTurn) }
+		guard state.playable[position]
+		else { return .failure(.cantPlayThere) }
+
+		let nextPlayerIndex = (playerIndex + 1) % players.count
+		let nextPlayerNumber = PlayerNumber(nextPlayerIndex + 1)
+		var nextBoard = state.board
+		nextBoard[position] = playerNumber
+		state = state.updating(stage: .nextPlayBy(nextPlayerNumber), board: nextBoard)
 		return .success(state)
 	}
 
@@ -139,6 +177,9 @@ extension Game.Issue : CustomStringConvertible {
 	public var description: String { switch self {
 		case .notEnoughPlayers:								return "notEnoughPlayers"
 		case .alreadyStarted:								return "alreadyStarted"
+		case .notAPlayer:									return "notAPlayer"
+		case .notYourTurn:									return "notYourTurn"
+		case .cantPlayThere:								return "cantPlayThere"
 	} }
 }
 
