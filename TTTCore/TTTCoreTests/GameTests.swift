@@ -170,4 +170,45 @@ class GameTests: XCTestCase {
 		XCTAssertEqual(state.playable.count(of: true), state.board.count - 1)
 	}
 
+	func testGameCanBeSavedAndRestored() {
+		let game = GameManager.createGame()
+		let player1 = game.addPlayer(Game.Player("Player 1"))
+		let player2 = game.addPlayer(Game.Player("Player 2"))
+		while game.stage == .waitingForPlayers {
+			_ = game.addPlayer(Game.Player("\(game.players.count)"))
+		}
+		var result: Result<Game.State, Game.Issue>
+		result = game.start()
+		guard case .success = result else {
+			XCTFail("Game start prevented by \(result)")
+			return
+		}
+		let position = [0,0]
+		result = game.play(player1, at: position)
+		guard case .success = result else {
+			XCTFail("Player 1 move prevented because \(result)")
+			return
+		}
+
+		//
+		let data1: Data
+		let game2: Game
+		let data2: Data
+		do {
+			data1 = try JSONEncoder().encode(game)
+			game2 = try JSONDecoder().decode(Game.self, from: data1)
+		}
+		catch {
+			XCTFail(error.localizedDescription)
+			return
+		}
+
+		//
+		XCTAssertEqual(data1, data2)
+		XCTAssertEqual(game2.state.board[position], player1, "Board square not occupied by player that played there")
+		XCTAssertEqual(game2.state.stage, .nextPlayBy(player2))
+		XCTAssertFalse(game2.state.playable[position])
+		XCTAssertEqual(game2.state.playable.count(of: true), game2.state.board.count - 1)
+	}
+
 }
