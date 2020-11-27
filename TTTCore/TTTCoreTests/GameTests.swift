@@ -79,4 +79,20 @@ class GameTests: XCTestCase {
 			}
 		}
 	}
+
+	func testGameCanStartOnlyWhenReady() {
+		let game = GameManager.createGame()
+		while game.stage == .waitingForPlayers {
+			let result1 = game.start()
+			if case .failure(.waitingForPlayers) = result1 {/*expected*/} else {
+				XCTFail("Expected game start prevented because waiting for players, but got \(result1)")
+			}
+			_ = game.addPlayer(Game.Player("\(game.players.count)"))
+		}
+		let result2 = game.start()
+		if case .success = result2 {/*expected*/} else {
+			XCTFail("Expected game to start; prevented by \(result2)")
+		}
+	}
+
 }
