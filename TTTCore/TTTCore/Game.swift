@@ -17,6 +17,8 @@ public class Game {
 		case notEnoughPlayers, alreadyStarted
 	}
 
+	public typealias Outcome = Result<State, Issue>
+
 	public struct Board {
 		public let dimensions	= [3,3]
 		public let count		= 9
@@ -75,7 +77,7 @@ public class Game {
 
 	// MARK: -
 
-	public func start() -> Result<State, Issue> {
+	public func start() -> Outcome {
 		switch stage {
 			case .waitingToStart:			break
 			case .waitingForPlayers:		return .failure(.notEnoughPlayers)

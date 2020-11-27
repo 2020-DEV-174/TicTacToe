@@ -16,13 +16,14 @@ public struct DimensionalStorage<Element> {
 
 	public typealias 		Index = Array<Element>.Index
 	public typealias 		Position = [Index]
+	public typealias 		Dimensions = [Index]
 
 	var storage:			[Element]
-	let increments:			[Index]
-	public let dimensions:	[Index]
+	let increments:			Dimensions
+	public let dimensions:	Dimensions
 	public var count:		Index { storage.count }
 
-	public init(dimensions d: [Index], initialValue v: Element) {
+	public init(dimensions d: Dimensions, initialValue v: Element) {
 		let capacity = d.reduce(1, *)
 		dimensions = d
 		storage = [Element](repeating: v, count: capacity)
@@ -30,7 +31,7 @@ public struct DimensionalStorage<Element> {
 		increments = d.map { let i = increment; increment *= $0 ; return i }
 	}
 
-	public init(dimensions d: [Index], initialValues v: [Element]) {
+	public init(dimensions d: Dimensions, initialValues v: [Element]) {
 		let capacity = d.reduce(1, *)
 		precondition(v.count == capacity, "Initial values have incompatible count of dimensions \(d)")
 		dimensions = d
@@ -154,7 +155,7 @@ public struct DimensionalStorage<Element> {
 
 extension DimensionalStorage where Element : AdditiveArithmetic {
 
-	public init(dimensions d: [Index]) {
+	public init(dimensions d: Dimensions) {
 		self.init(dimensions: d, initialValue: Element.zero)
 	}
 
