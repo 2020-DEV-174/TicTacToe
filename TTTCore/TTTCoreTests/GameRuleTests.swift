@@ -149,6 +149,26 @@ class GameRuleTests: XCTestCase {
 			XCTAssertEqual(game.state.scores, expectScore ? [player1:[[[0,0],[1,1],[2,2]],[[0,0],[0,1],[0,2]]]] : [:], "\n    Unexpected scoring when playing cell \(move.1)\n")
 		}
 	}
+
+	func testFirstPlayerToScoreWins() {
+		let (game, player1, player2) = createAStartedTwoPlayerGame()
+
+		// [ x x x
+		//   o o -
+		//   - - - ]
+		play(moves: [
+			(player1, 0), (player2, 4),
+			(player1, 1), (player2, 5),
+			(player1, 2),
+		], in: game) { move in
+			let expectScore = move.1 == 2
+			XCTAssertEqual(expectScore, !game.state.scores.isEmpty, "\n    Unexpected scoring when playing cell \(move.1)\n")
+		}
+
+		//
+		XCTAssertEqual(game.state.scores, [player1:[[[0,0],[1,0],[2,0]]]], "\n    Expected scoring move\n")
+		XCTAssertEqual(game.state.stage, .wonBy(player1), "\n    Expected player \(player1) to have won; stage is instead \(game.state.stage)\n")
+	}
 }
 
 
