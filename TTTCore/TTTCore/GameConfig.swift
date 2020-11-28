@@ -13,7 +13,7 @@ import Foundation
 public struct GameConfig {
 
 	public enum Rule {
-		case none
+		case needPlayers(minimum: Int, maximum: Int, explanation: String)
 	}
 
 	let rules:			[Rule]

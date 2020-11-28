@@ -14,7 +14,7 @@ import Foundation
 public struct GameManager {
 
 	public static let standardConfig:	GameConfig = .init(rules: [
-		.none
+		.needPlayers(minimum: 2, maximum: 2, explanation: "Requires two players.")
 	])
 
 	public static func createGame(config: GameConfig = standardConfig) -> Game {

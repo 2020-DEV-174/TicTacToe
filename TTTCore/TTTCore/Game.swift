@@ -78,6 +78,9 @@ public class Game : Codable {
 	}
 
 	public struct Config : Codable {
+		var informationForPlayers				= ""
+		var minPlayers:		Int					= 0
+		var maxPlayers:		Int					= 0
 	}
 
 	public typealias 		Player				= String
@@ -95,11 +98,14 @@ public class Game : Codable {
 
 	///
 	init(configureWith: GameConfig) {
-		let config = Config()
+		var config = Config()
+		var instructions = [ "This game…" ]
 		for rule in configureWith.rules { switch rule {
-			case .none:
-				break
+			case let .needPlayers(minimum, maximum, explanation):
+				config.minPlayers = minimum ; config.maxPlayers = maximum
+				instructions.append(explanation)
 		} }
+		config.informationForPlayers = instructions.joined(separator: "\n • ")
 		self.config = config
 	}
 
@@ -169,20 +175,12 @@ public class Game : Codable {
 	///
 	/// This class encapsulates play logic and hence is the authority on the rules of play.
 	public func rules() -> String {
-		"""
-		This is a game for one or two players
-		Player 1 is X and always goes first.
-		Players cannot play on a played position.
-		Players alternate placing X’s and O’s on the board until either one player has three in \
-		a row, horizontally, vertically or diagonally, or all nine squares are filled.
-		If a player is able to draw three X’s or three O’s in a row, that player wins.
-		If all nine squares are filled and neither player has three in a row, the game is a draw.
-		"""
+		config.informationForPlayers
 	}
 
 	/// Possible numbers of players
 	public func playerCountRange() -> (min: Int, max: Int) {
-		(min: 1, max: 2)
+		(min: config.minPlayers, max: config.maxPlayers)
 	}
 }
 
