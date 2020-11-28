@@ -26,6 +26,7 @@ public struct GameConfig {
 		case gameEndsWhenPlayerScoresOrAllCellsOccupied(explanation: String)
 	}
 
+	let name:			String
 	let rules:			[Rule]
 
 }

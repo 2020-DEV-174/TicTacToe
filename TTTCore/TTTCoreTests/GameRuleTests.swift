@@ -23,8 +23,8 @@ class GameRuleTests: XCTestCase {
 
 	func testNeedsTwoPlayers() {
 		let game = GameManager.createGame()
-		XCTAssertEqual(game.playerCountRange().min, 2)
-		XCTAssertEqual(game.playerCountRange().max, 2)
+		XCTAssertEqual(game.config.minPlayers, 2)
+		XCTAssertEqual(game.config.maxPlayers, 2)
 	}
 
 	func testBoardSizeIs3x3() {

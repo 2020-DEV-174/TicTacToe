@@ -10,7 +10,8 @@ import Foundation
 
 
 
-/// A game
+/// The core of a game, nominally TicTacToe, encapsulating data and rules
+///
 public class Game : Codable {
 
 	public enum Issue : Error {
@@ -90,10 +91,11 @@ public class Game : Codable {
 	public enum HowToDecideWhenTheGameEnds : String { case firstScorerWinsOrDrawWhenExhausted }
 
 	public struct Config : Codable {
-		var informationForPlayers				= ""
-		var minPlayers:		Int					= 0
-		var maxPlayers:		Int					= 0
-		var boardSize:		[Int]				= []
+		public var name							= ""
+		public var informationForPlayers		= ""
+		public var minPlayers:					Int = 0
+		public var maxPlayers:					Int = 0
+		var nominalBoardSize:					[Int] = []
 		var chooseInitialPlayerBy:				HowToChooseInitialPlayer = .player1
 		var chooseNextPlayerBy:					HowToChooseNextPlayer = .rotateAscending
 		var decidePlayableCellsBy:				HowToDecidePlayableCells = .unoccupied
@@ -114,6 +116,7 @@ public class Game : Codable {
 
 
 
+	// MARK: -
 	/// Configure game
 	init(configureWith: GameConfig) {
 		var config = Config()
@@ -125,7 +128,7 @@ public class Game : Codable {
 				instructions.append(explanation)
 
 			case let .needBoard(dimensions, explanation):
-				config.boardSize = dimensions
+				config.nominalBoardSize = dimensions
 				instructions.append(explanation)
 
 			case let .playStartsWithFirstPlayer(explanation):
@@ -149,20 +152,21 @@ public class Game : Codable {
 				instructions.append(explanation)
 		} }
 
+		config.name = configureWith.name
 		config.informationForPlayers = instructions.joined(separator: "\n • ")
 
 		self.config = config
-		self.state = State(boardDimensions: config.boardSize)
+		self.state = State(boardDimensions: config.nominalBoardSize)
 	}
 
 
 
 	/// Add player
 	public func addPlayer(_ player: Player) -> PlayerNumber {
-		guard players.count < playerCountRange().max
+		guard players.count < config.maxPlayers
 		else { return Self.noPlayerNumber }
 		players.append(player)
-		if players.count >= playerCountRange().min, stage == .waitingForPlayers {
+		if players.count >= config.minPlayers, stage == .waitingForPlayers {
 			state = state.updating(stage: .waitingToStart)
 		}
 		return PlayerNumber(players.count)
@@ -278,26 +282,11 @@ public class Game : Codable {
 				}
 		}
 	}
-
-
-
-	// MARK: -
-
-	/// Rules for display to user
-	///
-	/// This class encapsulates play logic and hence is the authority on the rules of play.
-	public func rules() -> String {
-		config.informationForPlayers
-	}
-
-	/// Possible numbers of players
-	public func playerCountRange() -> (min: Int, max: Int) {
-		(min: config.minPlayers, max: config.maxPlayers)
-	}
 }
 
 
 
+// MARK: -
 extension Game.Stage : Equatable, CustomStringConvertible, Codable {
 
 	public var description: String { switch self {
@@ -351,6 +340,8 @@ extension Game.Stage : Equatable, CustomStringConvertible, Codable {
 }
 
 
+
+// MARK: -
 extension Game.HowToChooseInitialPlayer : Codable {}
 extension Game.HowToChooseNextPlayer : Codable {}
 extension Game.HowToDecidePlayableCells : Codable {}
@@ -379,6 +370,7 @@ extension Game.HowToScoreAMove : Codable {
 
 
 
+// MARK: -
 extension Game.Issue : CustomStringConvertible {
 	public var description: String { switch self {
 		case .notEnoughPlayers:								return "notEnoughPlayers"

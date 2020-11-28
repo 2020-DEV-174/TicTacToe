@@ -26,13 +26,12 @@ class GameTests: XCTestCase {
 
 	func testGameSuppliesRules() throws {
 		let game = GameManager.createGame()
-		XCTAssert(!game.rules().isEmpty)
+		XCTAssert(!game.config.informationForPlayers.isEmpty)
 	}
 
 	func testGameSpecifiesPlayerCountRange() throws {
 		let game = GameManager.createGame()
-		let counts = game.playerCountRange()
-		XCTAssert(0 < counts.min && counts.min <= counts.max)
+		XCTAssert(0 < game.config.minPlayers && game.config.minPlayers <= game.config.maxPlayers)
 	}
 
 	func testGameAcceptsOnePlayer() throws {
@@ -43,7 +42,7 @@ class GameTests: XCTestCase {
 
 	func testGameAcceptsMaximumPlayers() throws {
 		let game = GameManager.createGame()
-		var count = game.playerCountRange().max
+		var count = game.config.maxPlayers
 		var playerNumber = Game.noPlayerNumber
 		while count > 0 {
 			count -= 1
@@ -56,7 +55,7 @@ class GameTests: XCTestCase {
 
 	func testGameStageShouldBeWaitingUntilThereAreEnoughPlayers() {
 		let game = GameManager.createGame()
-		var count = game.playerCountRange().min
+		var count = game.config.minPlayers
 		while count > 0 {
 			XCTAssertEqual(game.stage, Game.Stage.waitingForPlayers)
 			count -= 1
