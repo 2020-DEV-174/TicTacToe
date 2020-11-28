@@ -79,6 +79,7 @@ public class Game : Codable {
 
 	public enum HowToChooseInitialPlayer : String, Codable { case player1 }
 	public enum HowToChooseNextPlayer : String, Codable { case rotateAscending }
+	public enum HowToDecidePlayableCells : String, Codable { case unoccupied }
 
 	public struct Config : Codable {
 		var informationForPlayers				= ""
@@ -87,6 +88,7 @@ public class Game : Codable {
 		var boardSize:		[Int]				= []
 		var chooseInitialPlayerBy:				HowToChooseInitialPlayer = .player1
 		var chooseNextPlayerBy:					HowToChooseNextPlayer = .rotateAscending
+		var decidePlayableCellsBy:				HowToDecidePlayableCells = .unoccupied
 	}
 
 	public typealias 		Player				= String
@@ -122,6 +124,10 @@ public class Game : Codable {
 
 			case let .playRotatesThroughPlayers(explanation):
 				config.chooseNextPlayerBy = .rotateAscending
+				instructions.append(explanation)
+
+			case let .playableCellsAreOnlyThoseUnoccupied(explanation):
+				config.decidePlayableCellsBy = .unoccupied
 				instructions.append(explanation)
 		} }
 
@@ -159,11 +165,10 @@ public class Game : Codable {
 		}
 
 		let nextPlayerNumber = chooseInitialPlayer()
+		let nextStage = Stage.nextPlayBy(nextPlayerNumber)
+		let playable = decidePlayableCellsGiven(board: state.board, stage: nextStage)
 
-		var playable = state.playable
-	//	playable.transformEach { (_,_) in return true }
-
-		state = state.updating(stage: .nextPlayBy(nextPlayerNumber), playable: playable)
+		state = state.updating(stage: nextStage, playable: playable)
 
 		return .success(state)
 	}
@@ -179,14 +184,12 @@ public class Game : Codable {
 		else { return .failure(.cantPlayThere) }
 
 		let nextPlayerNumber = chooseNextPlayer(afterPlayBy: playerNumber)
-
+		let nextStage = Stage.nextPlayBy(nextPlayerNumber)
 		var board = state.board
 		board[position] = playerNumber
+		let playable = decidePlayableCellsGiven(board: board, stage: nextStage)
 
-		var playable = state.playable
-	//	playable.transformEach { board[$1] == Self.noPlayerNumber }
-
-		state = state.updating(stage: .nextPlayBy(nextPlayerNumber), board: board, playable: playable)
+		state = state.updating(stage: nextStage, board: board, playable: playable)
 
 		return .success(state)
 	}
@@ -206,6 +209,15 @@ public class Game : Codable {
 			case .rotateAscending:
 				let index = (indexOf(playerNumber: pn) + 1) % players.count
 				return playerNumber(atIndex: index)
+		}
+	}
+
+	func decidePlayableCellsGiven(board: Board, stage: Stage) -> State.Playable {
+		switch config.decidePlayableCellsBy {
+			case .unoccupied:
+				var playable = state.playable
+				playable.transformEach { board[$1] == Self.noPlayerNumber }
+				return playable
 		}
 	}
 

@@ -21,6 +21,7 @@ public struct GameConfig {
 		case needBoard(dimensions: [Int], explanation: String)
 		case playStartsWithFirstPlayer(explanation: String)
 		case playRotatesThroughPlayers(explanation: String)
+		case playableCellsAreOnlyThoseUnoccupied(explanation: String)
 	}
 
 	let rules:			[Rule]

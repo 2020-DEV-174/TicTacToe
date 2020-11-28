@@ -18,6 +18,7 @@ public struct GameManager {
 		.needBoard(dimensions: [3,3], explanation: "Uses a playing space of 3 by 3 squares."),
 		.playStartsWithFirstPlayer(explanation: "The first player always starts and is represented by X. The second player is represented by O"),
 		.playRotatesThroughPlayers(explanation: "Players alternate turns."),
+		.playableCellsAreOnlyThoseUnoccupied(explanation: "A player can play any unoccupied square when it is their turn."),
 	])
 
 	public static func createGame(config: GameConfig = standardConfig) -> Game {
