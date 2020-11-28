@@ -169,6 +169,26 @@ class GameRuleTests: XCTestCase {
 		XCTAssertEqual(game.state.scores, [player1:[[[0,0],[1,0],[2,0]]]], "\n    Expected scoring move\n")
 		XCTAssertEqual(game.state.stage, .wonBy(player1), "\n    Expected player \(player1) to have won; stage is instead \(game.state.stage)\n")
 	}
+
+	func testGameDrawnWhenAllSquaresOccupiedWithoutAWin() {
+		let (game, player1, player2) = createAStartedTwoPlayerGame()
+
+		// [ o x x
+		//   x x o
+		//   o o x ]
+		play(moves: [
+			(player1, 4), (player2, 0),
+			(player1, 3), (player2, 5),
+			(player1, 2), (player2, 6),
+			(player1, 1), (player2, 7),
+			(player1, 8)
+		], in: game) { move in
+			XCTAssert(game.state.scores.isEmpty, "\n    Unexpected scoring when playing cell \(move.1)\n")
+		}
+
+		//
+		XCTAssertEqual(game.state.stage, .drawn, "\n    Expected to be drawn; instead \(game.state.stage)\n")
+	}
 }
 
 
