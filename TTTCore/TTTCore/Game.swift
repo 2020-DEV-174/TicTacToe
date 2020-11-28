@@ -77,11 +77,16 @@ public class Game : Codable {
 		public typealias		Playable = DimensionalStorage<Bool>
 	}
 
+	public enum HowToChooseInitialPlayer : String, Codable { case player1 }
+	public enum HowToChooseNextPlayer : String, Codable { case rotateAscending }
+
 	public struct Config : Codable {
 		var informationForPlayers				= ""
 		var minPlayers:		Int					= 0
 		var maxPlayers:		Int					= 0
 		var boardSize:		[Int]				= []
+		var chooseInitialPlayerBy:				HowToChooseInitialPlayer = .player1
+		var chooseNextPlayerBy:					HowToChooseNextPlayer = .rotateAscending
 	}
 
 	public typealias 		Player				= String
@@ -108,6 +113,12 @@ public class Game : Codable {
 			case let .needBoard(dimensions, explanation):
 				config.boardSize = dimensions
 				instructions.append(explanation)
+			case let .playStartsWithFirstPlayer(explanation):
+				config.chooseInitialPlayerBy = .player1
+				instructions.append(explanation)
+			case let .playRotatesThroughPlayers(explanation):
+				config.chooseNextPlayerBy = .rotateAscending
+				instructions.append(explanation)
 		} }
 		config.informationForPlayers = instructions.joined(separator: "\n • ")
 		self.config = config
@@ -127,6 +138,9 @@ public class Game : Codable {
 		return PlayerNumber(players.count)
 	}
 
+	@inlinable public func indexOf(playerNumber pn: PlayerNumber) -> Int	{ pn - 1 }
+	@inlinable public func playerNumber(atIndex i: Int) -> PlayerNumber		{ i + 1 }
+
 
 
 	// MARK: -
@@ -138,7 +152,7 @@ public class Game : Codable {
 			default:						return .failure(.alreadyStarted)
 		}
 
-		let nextPlayerNumber = 1
+		let nextPlayerNumber = chooseInitialPlayer()
 
 		var playable = state.playable
 		playable.transformEach { (_,_) in return true }
@@ -149,7 +163,7 @@ public class Game : Codable {
 	}
 
 	public func play(_ playerNumber: PlayerNumber, at position: Board.Position) -> Outcome {
-		let playerIndex = playerNumber - 1
+		let playerIndex = indexOf(playerNumber: playerNumber)
 
 		guard 0 <= playerIndex, playerIndex < players.count
 		else { return .failure(.notAPlayer) }
@@ -158,8 +172,7 @@ public class Game : Codable {
 		guard state.playable[position]
 		else { return .failure(.cantPlayThere) }
 
-		let nextPlayerIndex = playerIndex // (playerIndex + 1) % players.count
-		let nextPlayerNumber = PlayerNumber(nextPlayerIndex + 1)
+		let nextPlayerNumber = chooseNextPlayer(afterPlayBy: playerNumber)
 
 		var board = state.board
 		board[position] = playerNumber
@@ -170,6 +183,24 @@ public class Game : Codable {
 		state = state.updating(stage: .nextPlayBy(nextPlayerNumber), board: board, playable: playable)
 
 		return .success(state)
+	}
+
+
+
+	// MARK: - Rule implementations
+
+	func chooseInitialPlayer() -> PlayerNumber {
+		switch config.chooseInitialPlayerBy {
+			case .player1:		return playerNumber(atIndex: 0)
+		}
+	}
+
+	func chooseNextPlayer(afterPlayBy pn: PlayerNumber) -> PlayerNumber {
+		switch config.chooseNextPlayerBy {
+			case .rotateAscending:
+				let index = (indexOf(playerNumber: pn) + 1) % players.count
+				return playerNumber(atIndex: index)
+		}
 	}
 
 

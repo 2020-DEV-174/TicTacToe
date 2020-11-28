@@ -15,7 +15,9 @@ public struct GameManager {
 
 	public static let standardConfig:	GameConfig = .init(rules: [
 		.needPlayers(minimum: 2, maximum: 2, explanation: "Requires two players."),
-		.needBoard(dimensions: [3,3], explanation: "Uses a playing space of 3 by 3 squares.")
+		.needBoard(dimensions: [3,3], explanation: "Uses a playing space of 3 by 3 squares."),
+		.playStartsWithFirstPlayer(explanation: "The first player always starts and is represented by X. The second player is represented by O"),
+		.playRotatesThroughPlayers(explanation: "Players alternate turns."),
 	])
 
 	public static func createGame(config: GameConfig = standardConfig) -> Game {
