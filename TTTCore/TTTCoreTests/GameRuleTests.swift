@@ -51,6 +51,45 @@ class GameRuleTests: XCTestCase {
 		XCTAssertNotNil(try? outcome.get(), "Player 1 could not play [2,0]: \(outcome)")
 	}
 
+	func play(moves s: [(Game.PlayerNumber, Game.Board.Storage.Index)], in game: Game, with test: ()->()) {
+		var outcome: Game.Outcome
+		let playingSpace = game.state.playable
+		for move in s {
+			let player = move.0, position = playingSpace.positionOf(index: move.1)
+			outcome = game.play(player, at: position)
+			XCTAssertNotNil(try? outcome.get(), "Player \(player) could not play \(position): \(outcome)")
+			test()
+		}
+	}
+
+	func testPlayerCanPlayAnyUnoccupiedCell() {
+		let game = GameManager.createGame()
+		let player1 = game.addPlayer("Player 1")
+		let player2 = game.addPlayer("Player 2")
+		let outcome = game.start()
+		XCTAssertNotNil(try? outcome.get(), "Game didn't start: \(outcome)")
+
+		//
+		func testPlayableNotEqualOccupied() {
+			let p = game.state.playable
+			let b = game.state.board
+			for i in 0 ..< p.count {
+				XCTAssertEqual(p[i], Game.noPlayerNumber == b[i], "Can\(p[i] ? "" : " not") play \(p.positionOf(index: i)), but it is \(Game.noPlayerNumber == b[i] ? "unuoccupied." : "occupied by player \(b[i]).")")
+			}
+		}
+
+		play(
+			moves: [
+			//	(Game.PlayerNumber, Game.Board.Storage.Index)
+				(player1, 0),
+				(player2, 1),
+				(player1, 3),
+				(player2, 4),
+				(player1, 5),
+				(player2, 6),
+			],
+			in: game, with: testPlayableNotEqualOccupied)
+	}
 }
 
 

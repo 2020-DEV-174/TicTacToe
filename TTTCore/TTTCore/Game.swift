@@ -161,7 +161,7 @@ public class Game : Codable {
 		let nextPlayerNumber = chooseInitialPlayer()
 
 		var playable = state.playable
-		playable.transformEach { (_,_) in return true }
+	//	playable.transformEach { (_,_) in return true }
 
 		state = state.updating(stage: .nextPlayBy(nextPlayerNumber), playable: playable)
 
@@ -184,7 +184,7 @@ public class Game : Codable {
 		board[position] = playerNumber
 
 		var playable = state.playable
-		playable.transformEach { board[$1] == Self.noPlayerNumber }
+	//	playable.transformEach { board[$1] == Self.noPlayerNumber }
 
 		state = state.updating(stage: .nextPlayBy(nextPlayerNumber), board: board, playable: playable)
 
