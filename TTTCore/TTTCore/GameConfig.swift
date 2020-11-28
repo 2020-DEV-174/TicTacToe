@@ -23,6 +23,7 @@ public struct GameConfig {
 		case playRotatesThroughPlayers(explanation: String)
 		case playableCellsAreOnlyThoseUnoccupied(explanation: String)
 		case playScoresPointForEachOccupiedLineOf(length: Int, explanation: String)
+		case gameEndsWhenPlayerScoresOrAllCellsOccupied(explanation: String)
 	}
 
 	let rules:			[Rule]

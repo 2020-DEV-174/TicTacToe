@@ -87,6 +87,7 @@ public class Game : Codable {
 	public enum HowToChooseNextPlayer : String { case rotateAscending }
 	public enum HowToDecidePlayableCells : String { case unoccupied }
 	public enum HowToScoreAMove { case line(length: Int) }
+	public enum HowToDecideWhenTheGameEnds : String { case firstScorerWinsOrDrawWhenExhausted }
 
 	public struct Config : Codable {
 		var informationForPlayers				= ""
@@ -97,6 +98,7 @@ public class Game : Codable {
 		var chooseNextPlayerBy:					HowToChooseNextPlayer = .rotateAscending
 		var decidePlayableCellsBy:				HowToDecidePlayableCells = .unoccupied
 		var scoreAMoveBy:						HowToScoreAMove = .line(length: 3)
+		var decideWhenTheGameEndsBy:			HowToDecideWhenTheGameEnds = .firstScorerWinsOrDrawWhenExhausted
 	}
 
 	public typealias 		Player				= String
@@ -140,6 +142,10 @@ public class Game : Codable {
 
 			case let .playScoresPointForEachOccupiedLineOf(length, explanation):
 				config.scoreAMoveBy = .line(length: length)
+				instructions.append(explanation)
+
+			case let .gameEndsWhenPlayerScoresOrAllCellsOccupied(explanation):
+				config.decideWhenTheGameEndsBy = .firstScorerWinsOrDrawWhenExhausted
 				instructions.append(explanation)
 		} }
 
@@ -196,7 +202,7 @@ public class Game : Codable {
 		else { return .failure(.cantPlayThere) }
 
 		let nextPlayerNumber = chooseNextPlayer(afterPlayBy: playerNumber)
-		let nextStage = Stage.nextPlayBy(nextPlayerNumber)
+		var nextStage = Stage.nextPlayBy(nextPlayerNumber)
 		var board = state.board
 		board[position] = playerNumber
 		var scores: Scores? = nil
@@ -206,6 +212,10 @@ public class Game : Codable {
 			scores = newScores
 		}
 		let playable = decidePlayableCellsGiven(board: board, stage: nextStage)
+		nextStage =
+			finalStageIfGameHasEndedWith(scores: scores ?? state.scores, board: board,
+										 afterPlayBy: playerNumber, at: position)
+		 ?? nextStage
 
 		state = state.updating(stage: nextStage, board: board, playable: playable, scores: scores)
 
@@ -253,6 +263,19 @@ public class Game : Codable {
 					scoringPlays.append(line)
 				}
 				return !scoringPlays.isEmpty ? scoringPlays : nil
+		}
+	}
+
+	func finalStageIfGameHasEndedWith(scores: Scores, board: Board, afterPlayBy pn: PlayerNumber, at position: Board.Position) -> Stage? {
+		switch config.decideWhenTheGameEndsBy {
+			case .firstScorerWinsOrDrawWhenExhausted:
+				if !scores.isEmpty {
+					return .wonBy(pn)
+				} else if 0 == board.storage.count(where: { $0 == Self.noPlayerNumber }) {
+					return .drawn
+				} else {
+					return nil
+				}
 		}
 	}
 
@@ -331,6 +354,7 @@ extension Game.Stage : Equatable, CustomStringConvertible, Codable {
 extension Game.HowToChooseInitialPlayer : Codable {}
 extension Game.HowToChooseNextPlayer : Codable {}
 extension Game.HowToDecidePlayableCells : Codable {}
+extension Game.HowToDecideWhenTheGameEnds : Codable {}
 
 extension Game.HowToScoreAMove : Codable {
 
