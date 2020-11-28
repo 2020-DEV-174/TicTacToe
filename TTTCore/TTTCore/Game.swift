@@ -92,35 +92,41 @@ public class Game : Codable {
 	public typealias 		Player				= String
 	public typealias 		PlayerNumber		= Int
 	public static let		noPlayerNumber		= PlayerNumber(0)
-	public private(set) var players				= [Player]()
 
-	public var				stage:				Stage { state.stage }
 
-	public private(set) var state:				State
 
 	public let				config:				Config
+	public private(set) var players				= [Player]()
+	public var				stage:				Stage { state.stage }
+	public private(set) var state:				State
 
 
 
-	///
+	/// Configure game
 	init(configureWith: GameConfig) {
 		var config = Config()
 		var instructions = [ "This game…" ]
+
 		for rule in configureWith.rules { switch rule {
 			case let .needPlayers(minimum, maximum, explanation):
 				config.minPlayers = minimum ; config.maxPlayers = maximum
 				instructions.append(explanation)
+
 			case let .needBoard(dimensions, explanation):
 				config.boardSize = dimensions
 				instructions.append(explanation)
+
 			case let .playStartsWithFirstPlayer(explanation):
 				config.chooseInitialPlayerBy = .player1
 				instructions.append(explanation)
+
 			case let .playRotatesThroughPlayers(explanation):
 				config.chooseNextPlayerBy = .rotateAscending
 				instructions.append(explanation)
 		} }
+
 		config.informationForPlayers = instructions.joined(separator: "\n • ")
+
 		self.config = config
 		self.state = State(boardDimensions: config.boardSize)
 	}
