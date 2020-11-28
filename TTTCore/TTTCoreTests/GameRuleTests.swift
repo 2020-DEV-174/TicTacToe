@@ -67,7 +67,7 @@ class GameRuleTests: XCTestCase {
 		for move in s {
 			let player = move.0, position = playingSpace.positionOf(index: move.1)
 			outcome = game.play(player, at: position)
-			XCTAssertNotNil(try? outcome.get(), "Player \(player) could not play \(position): \(outcome)")
+			XCTAssertNotNil(try? outcome.get(), "\n   Player \(player) could not play \(position): \(outcome)\n")
 			test(move)
 		}
 	}
@@ -97,7 +97,7 @@ class GameRuleTests: XCTestCase {
 			in: game, with: testPlayableNotEqualOccupied)
 	}
 
-	func testPlayerScoresByOccupyingThreeCellsInAnyLine() {
+	func testPlayerScoresByOccupyingThreeCellsInAHorizontalLine() {
 		let (game, player1, player2) = createAStartedTwoPlayerGame()
 
 		// [ x x x
@@ -109,9 +109,13 @@ class GameRuleTests: XCTestCase {
 			(player1, 2),
 		], in: game) { move in
 			let expectScore = move.1 == 2
-			XCTAssertEqual(expectScore, game.state.scores.isEmpty, "Unexpected scoring when playing cell \(move.1)")
-			XCTAssertEqual(game.state.scores, expectScore ? [player1:[[[0,0],[1,0],[2,0]]]] : [:], "Unexpected scoring when playing cell \(move.1)")
+			XCTAssertEqual(expectScore, !game.state.scores.isEmpty, "\n    Unexpected scoring when playing cell \(move.1)\n")
+			XCTAssertEqual(game.state.scores, expectScore ? [player1:[[[0,0],[1,0],[2,0]]]] : [:], "\n    Unexpected scoring when playing cell \(move.1)\n")
 		}
+	}
+
+	func testPlayerScoresByOccupyingThreeCellsInAVerticalLine() {
+		let (game, player1, player2) = createAStartedTwoPlayerGame()
 
 		// [ x o -
 		//   x o -
@@ -121,10 +125,14 @@ class GameRuleTests: XCTestCase {
 			(player1, 3), (player2, 4),
 			(player1, 6),
 		], in: game) { move in
-			let expectScore = move.1 == 7
-			XCTAssertEqual(expectScore, game.state.scores.isEmpty, "Unexpected scoring when playing cell \(move.1)")
-			XCTAssertEqual(game.state.scores, expectScore ? [player1:[[[0,0],[0,1],[0,2]]]] : [:], "Unexpected scoring when playing cell \(move.1)")
+			let expectScore = move.1 == 6
+			XCTAssertEqual(expectScore, !game.state.scores.isEmpty, "\n    Unexpected scoring when playing cell \(move.1)\n")
+			XCTAssertEqual(game.state.scores, expectScore ? [player1:[[[0,0],[0,1],[0,2]]]] : [:], "\n    Unexpected scoring when playing cell \(move.1)\n")
 		}
+	}
+
+	func testPlayerScoresByOccupyingThreeCellsInADiagonalAndVerticalLine() {
+		let (game, player1, player2) = createAStartedTwoPlayerGame()
 
 		// [ x o o
 		//   x x o
@@ -137,8 +145,8 @@ class GameRuleTests: XCTestCase {
 			(player1, 0)
 		], in: game) { move in
 			let expectScore = move.1 == 0
-			XCTAssertEqual(expectScore, game.state.scores.isEmpty, "Unexpected scoring when playing cell \(move.1)")
-			XCTAssertEqual(game.state.scores, expectScore ? [player1:[[[0,0],[0,1],[0,2]],[[0,0],[4,4],[8,8]]]] : [:], "Unexpected scoring when playing cell \(move.1)")
+			XCTAssertEqual(expectScore, !game.state.scores.isEmpty, "\n    Unexpected scoring when playing cell \(move.1)\n")
+			XCTAssertEqual(game.state.scores, expectScore ? [player1:[[[0,0],[1,1],[2,2]],[[0,0],[0,1],[0,2]]]] : [:], "\n    Unexpected scoring when playing cell \(move.1)\n")
 		}
 	}
 }

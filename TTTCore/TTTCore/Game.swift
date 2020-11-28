@@ -50,6 +50,10 @@ public class Game : Codable {
 		public typealias		Position = Storage.Position
 	}
 
+	public typealias ScoringCombination = [Board.Position]
+	public typealias ScoringPlays = [ScoringCombination]
+	public typealias Scores = [PlayerNumber:ScoringPlays]
+
 	public enum Stage {
 		case waitingForPlayers, waitingToStart, nextPlayBy(PlayerNumber), wonBy(PlayerNumber), drawn
 	}
@@ -62,17 +66,19 @@ public class Game : Codable {
 		public let stage:		Stage
 		public let board:		Board
 		public let playable:	Playable
+		public let scores:		Scores
 
 		init(boardDimensions d: Board.Storage.Dimensions) {
 			stage = .waitingForPlayers
 			board = Board(dimensions: d)
 			playable = Playable(dimensions: board.storage.dimensions, initialValue: true)
+			scores = [:]
 		}
-		init(stage s: Stage, board b: Board, playable p: Playable) {
-			stage = s ; board = b ; playable = p
+		init(stage s: Stage, board b: Board, playable p: Playable, scores c: Scores) {
+			stage = s ; board = b ; playable = p ; scores = c
 		}
-		func updating(stage s: Stage? = nil, board b: Board? = nil, playable p: Playable? = nil) -> Self {
-			State(stage: s ?? stage, board: b ?? board, playable: p ?? playable)
+		func updating(stage s: Stage? = nil, board b: Board? = nil, playable p: Playable? = nil, scores c: Scores? = nil) -> Self {
+			State(stage: s ?? stage, board: b ?? board, playable: p ?? playable, scores: c ?? scores)
 		}
 		public typealias		Playable = DimensionalStorage<Bool>
 	}
@@ -80,6 +86,7 @@ public class Game : Codable {
 	public enum HowToChooseInitialPlayer : String, Codable { case player1 }
 	public enum HowToChooseNextPlayer : String, Codable { case rotateAscending }
 	public enum HowToDecidePlayableCells : String, Codable { case unoccupied }
+	public enum HowToScoreAMove { case line(length: Int) }
 
 	public struct Config : Codable {
 		var informationForPlayers				= ""
@@ -89,6 +96,7 @@ public class Game : Codable {
 		var chooseInitialPlayerBy:				HowToChooseInitialPlayer = .player1
 		var chooseNextPlayerBy:					HowToChooseNextPlayer = .rotateAscending
 		var decidePlayableCellsBy:				HowToDecidePlayableCells = .unoccupied
+		var scoreAMoveBy:						HowToScoreAMove = .line(length: 3)
 	}
 
 	public typealias 		Player				= String
@@ -128,6 +136,10 @@ public class Game : Codable {
 
 			case let .playableCellsAreOnlyThoseUnoccupied(explanation):
 				config.decidePlayableCellsBy = .unoccupied
+				instructions.append(explanation)
+
+			case let .playScoresPointForEachOccupiedLineOf(length, explanation):
+				config.scoreAMoveBy = .line(length: length)
 				instructions.append(explanation)
 		} }
 
@@ -187,9 +199,15 @@ public class Game : Codable {
 		let nextStage = Stage.nextPlayBy(nextPlayerNumber)
 		var board = state.board
 		board[position] = playerNumber
+		var scores: Scores? = nil
+		if let scoringPlays = scorePlay(at: position, on: board, by: playerNumber) {
+			var newScores = state.scores
+			newScores[playerNumber, default: ScoringPlays()] += scoringPlays
+			scores = newScores
+		}
 		let playable = decidePlayableCellsGiven(board: board, stage: nextStage)
 
-		state = state.updating(stage: nextStage, board: board, playable: playable)
+		state = state.updating(stage: nextStage, board: board, playable: playable, scores: scores)
 
 		return .success(state)
 	}
@@ -218,6 +236,23 @@ public class Game : Codable {
 				var playable = state.playable
 				playable.transformEach { board[$1] == Self.noPlayerNumber }
 				return playable
+		}
+	}
+
+	func scorePlay(at position: Board.Position, on board: Board, by player: PlayerNumber) -> ScoringPlays? {
+		switch config.scoreAMoveBy {
+			case .line(let length):
+				var scoringPlays = ScoringPlays()
+				let directions: [[Board.Storage.Move]] = [[.ascend,.fixed],[.ascend,.ascend],[.fixed,.ascend]]
+				for direction in directions {
+					let line = board.storage.positions(moving: direction, through: position)
+					guard line.count == length
+					else { continue }
+					guard nil == line.first(where: { board[$0] != player })
+					else { continue }
+					scoringPlays.append(line)
+				}
+				return !scoringPlays.isEmpty ? scoringPlays : nil
 		}
 	}
 
@@ -290,6 +325,28 @@ extension Game.Stage : Equatable, CustomStringConvertible, Codable {
 		try container.encode(representation)
 	}
 
+}
+
+
+extension Game.HowToScoreAMove : Codable {
+
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.singleValueContainer()
+		let stringRep = try container.decode(String.self)
+		let parts = stringRep.split(separator: ":")
+		if parts.count == 2, let n = Int(parts[1]) { switch parts[0] {
+			case "line":		self = .line(length: n) ; return
+			default:			break
+		} }
+		throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode a Game.HowToScoreAMove from '\(stringRep)'")
+	}
+
+	public func encode(to encoder: Encoder) throws {
+		var container = encoder.singleValueContainer()
+		switch self {
+			case .line(let n):			try container.encode("line:\(n)")
+		}
+	}
 }
 
 

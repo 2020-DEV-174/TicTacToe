@@ -19,6 +19,7 @@ public struct GameManager {
 		.playStartsWithFirstPlayer(explanation: "The first player always starts and is represented by X. The second player is represented by O"),
 		.playRotatesThroughPlayers(explanation: "Players alternate turns."),
 		.playableCellsAreOnlyThoseUnoccupied(explanation: "A player can play any unoccupied square when it is their turn."),
+		.playScoresPointForEachOccupiedLineOf(length: 3, explanation: "A player by occupying three squares in a line in any direction - horizontal, vertical, or diagonal."),
 	])
 
 	public static func createGame(config: GameConfig = standardConfig) -> Game {
