@@ -14,6 +14,7 @@ public struct GameConfig {
 
 	public enum Rule {
 		case needPlayers(minimum: Int, maximum: Int, explanation: String)
+		case needBoard(dimensions: [Int], explanation: String)
 	}
 
 	let rules:			[Rule]
