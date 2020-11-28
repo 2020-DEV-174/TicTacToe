@@ -50,6 +50,13 @@ public class Game : Codable {
 		public typealias		Position = Storage.Position
 	}
 
+	public enum Stage {
+		case waitingForPlayers, waitingToStart, nextPlayBy(PlayerNumber), wonBy(PlayerNumber), drawn
+	}
+
+	/// Encapulate all the truth that players need to know for game progression: board occupancy,
+	/// whose move if any or game outcome, and what positions are possible for next player.
+	///
 	public struct State : Codable {
 
 		public let stage:		Stage
@@ -75,29 +82,21 @@ public class Game : Codable {
 	public static let		noPlayerNumber		= PlayerNumber(0)
 	public private(set) var players				= [Player]()
 
-	public enum Stage {
-		case waitingForPlayers, waitingToStart, nextPlayBy(PlayerNumber), wonBy(PlayerNumber), drawn
-	}
-
-	public private(set) var stage				: Stage {
-		get { state.stage }
-		set {
-			guard state.stage != newValue else { return }
-			state = state.updating(stage: newValue)
-		}
-	}
+	public var				stage				: Stage { state.stage }
 
 	public private(set) var state				= State()
 
 	init() {}
+
+
 
 	/// Add player
 	public func addPlayer(_ player: Player) -> PlayerNumber {
 		guard players.count < playerCountRange().max
 		else { return Self.noPlayerNumber }
 		players.append(player)
-		if players.count >= playerCountRange().min {
-			stage = .waitingToStart
+		if players.count >= playerCountRange().min, stage == .waitingForPlayers {
+			state = state.updating(stage: .waitingToStart)
 		}
 		return PlayerNumber(players.count)
 	}
@@ -146,6 +145,8 @@ public class Game : Codable {
 
 		return .success(state)
 	}
+
+
 
 	// MARK: -
 
