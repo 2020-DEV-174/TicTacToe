@@ -77,6 +77,9 @@ public class Game : Codable {
 		public typealias		Playable = DimensionalStorage<Bool>
 	}
 
+	public struct Config : Codable {
+	}
+
 	public typealias 		Player				= String
 	public typealias 		PlayerNumber		= Int
 	public static let		noPlayerNumber		= PlayerNumber(0)
@@ -86,7 +89,19 @@ public class Game : Codable {
 
 	public private(set) var state				= State()
 
-	init() {}
+	public let				config:				Config
+
+
+
+	///
+	init(configureWith: GameConfig) {
+		let config = Config()
+		for rule in configureWith.rules { switch rule {
+			case .none:
+				break
+		} }
+		self.config = config
+	}
 
 
 

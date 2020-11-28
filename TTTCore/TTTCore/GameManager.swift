@@ -13,8 +13,12 @@ import Foundation
 /// Supplier of new games
 public struct GameManager {
 
-	public static func createGame() -> Game {
-		Game()
+	public static let standardConfig:	GameConfig = .init(rules: [
+		.none
+	])
+
+	public static func createGame(config: GameConfig = standardConfig) -> Game {
+		Game(configureWith: config)
 	}
 
 }
