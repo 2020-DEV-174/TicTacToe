@@ -51,26 +51,32 @@ class GameRuleTests: XCTestCase {
 		XCTAssertNotNil(try? outcome.get(), "Player 1 could not play [2,0]: \(outcome)")
 	}
 
-	func play(moves s: [(Game.PlayerNumber, Game.Board.Storage.Index)], in game: Game, with test: ()->()) {
+	func createAStartedTwoPlayerGame() -> (game: Game, player1: Game.PlayerNumber, player2: Game.PlayerNumber) {
+		let game = GameManager.createGame()
+		let player1 = game.addPlayer("Player 1")
+		let player2 = game.addPlayer("Player 2")
+		let outcome = game.start()
+		XCTAssertNotNil(try? outcome.get(), "Game didn't start: \(outcome)")
+		return (game, player1, player2)
+	}
+
+	typealias PlayerMove = (Game.PlayerNumber, Game.Board.Storage.Index)
+	func play(moves s: [PlayerMove], in game: Game, with test: (_ move: PlayerMove)->()) {
 		var outcome: Game.Outcome
 		let playingSpace = game.state.playable
 		for move in s {
 			let player = move.0, position = playingSpace.positionOf(index: move.1)
 			outcome = game.play(player, at: position)
 			XCTAssertNotNil(try? outcome.get(), "Player \(player) could not play \(position): \(outcome)")
-			test()
+			test(move)
 		}
 	}
 
 	func testPlayerCanPlayAnyUnoccupiedCell() {
-		let game = GameManager.createGame()
-		let player1 = game.addPlayer("Player 1")
-		let player2 = game.addPlayer("Player 2")
-		let outcome = game.start()
-		XCTAssertNotNil(try? outcome.get(), "Game didn't start: \(outcome)")
+		let (game, player1, player2) = createAStartedTwoPlayerGame()
 
 		//
-		func testPlayableNotEqualOccupied() {
+		func testPlayableNotEqualOccupied(_ move: PlayerMove) {
 			let p = game.state.playable
 			let b = game.state.board
 			for i in 0 ..< p.count {
@@ -89,6 +95,51 @@ class GameRuleTests: XCTestCase {
 				(player2, 6),
 			],
 			in: game, with: testPlayableNotEqualOccupied)
+	}
+
+	func testPlayerScoresByOccupyingThreeCellsInAnyLine() {
+		let (game, player1, player2) = createAStartedTwoPlayerGame()
+
+		// [ x x x
+		//   o o -
+		//   - - - ]
+		play(moves: [
+			(player1, 0), (player2, 4),
+			(player1, 1), (player2, 5),
+			(player1, 2),
+		], in: game) { move in
+			let expectScore = move.1 == 2
+			XCTAssertEqual(expectScore, game.state.scores.isEmpty, "Unexpected scoring when playing cell \(move.1)")
+			XCTAssertEqual(game.state.scores, expectScore ? [player1:[[[0,0],[1,0],[2,0]]]] : [:], "Unexpected scoring when playing cell \(move.1)")
+		}
+
+		// [ x o -
+		//   x o -
+		//   x - - ]
+		play(moves: [
+			(player1, 0), (player2, 1),
+			(player1, 3), (player2, 4),
+			(player1, 6),
+		], in: game) { move in
+			let expectScore = move.1 == 7
+			XCTAssertEqual(expectScore, game.state.scores.isEmpty, "Unexpected scoring when playing cell \(move.1)")
+			XCTAssertEqual(game.state.scores, expectScore ? [player1:[[[0,0],[0,1],[0,2]]]] : [:], "Unexpected scoring when playing cell \(move.1)")
+		}
+
+		// [ x o o
+		//   x x o
+		//   x o x ]
+		play(moves: [
+			(player1, 4), (player2, 2),
+			(player1, 3), (player2, 5),
+			(player1, 8), (player2, 7),
+			(player1, 6), (player2, 1),
+			(player1, 0)
+		], in: game) { move in
+			let expectScore = move.1 == 0
+			XCTAssertEqual(expectScore, game.state.scores.isEmpty, "Unexpected scoring when playing cell \(move.1)")
+			XCTAssertEqual(game.state.scores, expectScore ? [player1:[[[0,0],[0,1],[0,2]],[[0,0],[4,4],[8,8]]]] : [:], "Unexpected scoring when playing cell \(move.1)")
+		}
 	}
 }
 
