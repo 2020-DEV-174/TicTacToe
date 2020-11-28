@@ -27,6 +27,11 @@ class GameRuleTests: XCTestCase {
 		XCTAssertEqual(game.playerCountRange().max, 2)
 	}
 
+	func testBoardSizeIs3x3() {
+		let game = GameManager.createGame()
+		XCTAssertEqual(game.state.board.dimensions, [3,3])
+	}
+
 }
 
 
