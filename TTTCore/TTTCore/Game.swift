@@ -83,9 +83,9 @@ public class Game : Codable {
 		public typealias		Playable = DimensionalStorage<Bool>
 	}
 
-	public enum HowToChooseInitialPlayer : String, Codable { case player1 }
-	public enum HowToChooseNextPlayer : String, Codable { case rotateAscending }
-	public enum HowToDecidePlayableCells : String, Codable { case unoccupied }
+	public enum HowToChooseInitialPlayer : String { case player1 }
+	public enum HowToChooseNextPlayer : String { case rotateAscending }
+	public enum HowToDecidePlayableCells : String { case unoccupied }
 	public enum HowToScoreAMove { case line(length: Int) }
 
 	public struct Config : Codable {
@@ -296,37 +296,41 @@ extension Game.Stage : Equatable, CustomStringConvertible, Codable {
 
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.singleValueContainer()
-		let representation = try container.decode(String.self)
-		switch representation {
+		let stringRep = try container.decode(String.self)
+		switch stringRep {
 			case "waitingForPlayers":	self = .waitingForPlayers ; return
 			case "waitingToStart":		self = .waitingToStart ; return
 			case "drawn":				self = .drawn ; return
 			default:
-				let parts = representation.split(separator: ":")
+				let parts = stringRep.split(separator: ":")
 				if parts.count == 2, let n = Game.PlayerNumber(parts[1]) { switch parts[0] {
 					case "nextPlayBy":	self = .nextPlayBy(n) ; return
 					case "wonBy":		self = .wonBy(n) ; return
 					default:			break
 				} }
 		}
-		throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode a Game.Stage from '\(representation)'")
+		throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode a Game.Stage from '\(stringRep)'")
 	}
 
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.singleValueContainer()
-		var representation: String
+		var stringRep: String
 		switch self {
-			case .waitingForPlayers:	representation = "waitingForPlayers"
-			case .waitingToStart:		representation = "waitingToStart"
-			case .nextPlayBy(let n):	representation = "nextPlayBy:\(n)"
-			case .wonBy(let n):			representation = "wonBy:\(n)"
-			case .drawn:				representation = "drawn"
+			case .waitingForPlayers:	stringRep = "waitingForPlayers"
+			case .waitingToStart:		stringRep = "waitingToStart"
+			case .nextPlayBy(let n):	stringRep = "nextPlayBy:\(n)"
+			case .wonBy(let n):			stringRep = "wonBy:\(n)"
+			case .drawn:				stringRep = "drawn"
 		}
-		try container.encode(representation)
+		try container.encode(stringRep)
 	}
 
 }
 
+
+extension Game.HowToChooseInitialPlayer : Codable {}
+extension Game.HowToChooseNextPlayer : Codable {}
+extension Game.HowToDecidePlayableCells : Codable {}
 
 extension Game.HowToScoreAMove : Codable {
 
