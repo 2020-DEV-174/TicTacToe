@@ -18,6 +18,8 @@
 		AECC1F65257231E40094D6F5 /* GameRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC1F64257231E40094D6F5 /* GameRuleTests.swift */; };
 		AECC1F66257231E40094D6F5 /* GameRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC1F64257231E40094D6F5 /* GameRuleTests.swift */; };
 		AECC1F6B25723B440094D6F5 /* GameConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC1F6A25723B440094D6F5 /* GameConfig.swift */; };
+		AECC1F742572B09A0094D6F5 /* GameIOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC1F732572B09A0094D6F5 /* GameIOTests.swift */; };
+		AECC1F752572B09A0094D6F5 /* GameIOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECC1F732572B09A0094D6F5 /* GameIOTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +37,7 @@
 		AE27F54825706C3600E4BCC0 /* DimensionalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimensionalStorage.swift; sourceTree = "<group>"; };
 		AECC1F64257231E40094D6F5 /* GameRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameRuleTests.swift; sourceTree = "<group>"; };
 		AECC1F6A25723B440094D6F5 /* GameConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameConfig.swift; sourceTree = "<group>"; };
+		AECC1F732572B09A0094D6F5 /* GameIOTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameIOTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +100,7 @@
 		AE22F191256F0803007EF8B6 /* TTTCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				AECC1F732572B09A0094D6F5 /* GameIOTests.swift */,
 				AECC1F64257231E40094D6F5 /* GameRuleTests.swift */,
 				AE22F192256F0803007EF8B6 /* GameTests.swift */,
 				AE27F53F2570689000E4BCC0 /* DimensionalStorageTests.swift */,
@@ -268,6 +272,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE22F193256F0803007EF8B6 /* GameTests.swift in Sources */,
+				AECC1F742572B09A0094D6F5 /* GameIOTests.swift in Sources */,
 				AE27F5402570689000E4BCC0 /* DimensionalStorageTests.swift in Sources */,
 				AECC1F65257231E40094D6F5 /* GameRuleTests.swift in Sources */,
 			);
@@ -278,6 +283,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE22F1B5257003C0007EF8B6 /* GameTests.swift in Sources */,
+				AECC1F752572B09A0094D6F5 /* GameIOTests.swift in Sources */,
 				AE27F5412570689100E4BCC0 /* DimensionalStorageTests.swift in Sources */,
 				AECC1F66257231E40094D6F5 /* GameRuleTests.swift in Sources */,
 			);
