@@ -87,12 +87,11 @@
 		AE22F182256F0774007EF8B6 /* TTTCore */ = {
 			isa = PBXGroup;
 			children = (
-				AE22F183256F0774007EF8B6 /* TTTCore.h */,
-				AE22F184256F0774007EF8B6 /* Info.plist */,
 				AE27F5172570106500E4BCC0 /* GameManager.swift */,
 				AECC1F6A25723B440094D6F5 /* GameConfig.swift */,
 				AE27F51C257012DC00E4BCC0 /* Game.swift */,
 				AE27F54825706C3600E4BCC0 /* DimensionalStorage.swift */,
+				AECC1F792572B15F0094D6F5 /* Supporting */,
 			);
 			path = TTTCore;
 			sourceTree = "<group>";
@@ -124,6 +123,15 @@
 				AE22F1CC25700591007EF8B6 /* Info.plist */,
 			);
 			path = _iOS;
+			sourceTree = "<group>";
+		};
+		AECC1F792572B15F0094D6F5 /* Supporting */ = {
+			isa = PBXGroup;
+			children = (
+				AE22F183256F0774007EF8B6 /* TTTCore.h */,
+				AE22F184256F0774007EF8B6 /* Info.plist */,
+			);
+			path = Supporting;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -423,7 +431,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = TTTCore/Info.plist;
+				INFOPLIST_FILE = TTTCore/Supporting/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -448,7 +456,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = TTTCore/Info.plist;
+				INFOPLIST_FILE = TTTCore/Supporting/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

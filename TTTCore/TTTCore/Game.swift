@@ -25,6 +25,7 @@ public class Game : Codable {
 		public var dimensions:	Storage.Dimensions { storage.dimensions }
 		public var count:		Storage.Index { storage.count }
 		public var isEmpty: 	Bool { nil == storage.storage.first(where: {$0 != Game.noPlayerNumber}) }
+
 		@inlinable
 		public subscript(p: Position) -> PlayerNumber {
 			get { storage[p] }
@@ -32,6 +33,7 @@ public class Game : Codable {
 				storage[p] = newValue
 			} }
 		}
+
 		@inlinable
 		public subscript(i: Storage.Index) -> PlayerNumber {
 			get { storage[i] }
@@ -109,6 +111,7 @@ public class Game : Codable {
 
 
 
+	// MARK: -
 	public let				config:				Config
 	public private(set) var players				= [Player]()
 	public var				stage:				Stage { state.stage }
@@ -171,9 +174,6 @@ public class Game : Codable {
 		}
 		return PlayerNumber(players.count)
 	}
-
-	@inlinable public func indexOf(playerNumber pn: PlayerNumber) -> Int	{ pn - 1 }
-	@inlinable public func playerNumber(atIndex i: Int) -> PlayerNumber		{ i + 1 }
 
 
 
@@ -282,6 +282,12 @@ public class Game : Codable {
 				}
 		}
 	}
+
+
+
+	// MARK: -
+	@inlinable public func indexOf(playerNumber pn: PlayerNumber) -> Int	{ pn - 1 }
+	@inlinable public func playerNumber(atIndex i: Int) -> PlayerNumber		{ i + 1 }
 }
 
 
