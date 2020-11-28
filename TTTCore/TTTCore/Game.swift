@@ -158,7 +158,7 @@ public class Game : Codable {
 		guard state.playable[position]
 		else { return .failure(.cantPlayThere) }
 
-		let nextPlayerIndex = (playerIndex + 1) % players.count
+		let nextPlayerIndex = playerIndex // (playerIndex + 1) % players.count
 		let nextPlayerNumber = PlayerNumber(nextPlayerIndex + 1)
 
 		var board = state.board
