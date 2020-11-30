@@ -60,8 +60,7 @@ class GameIOTests: XCTestCase {
 		let game = GameManager.createGame()
 		let subject = PassthroughSubject<Game.PlayerHostMessage, Never>()
 		let result = game.addPlayerHost(subject.eraseToAnyPublisher())
-		guard case .success(let hostID) = result
-		else { XCTFail("Could not add player host because \(result)") ; return }
+		XCTAssertNotNil(try? result.get(), "Could not add player host because \(result)")
 		//
 		let tag = UUID()
 		subject.send(.addPlayer(name: "Player 1", tag: tag))

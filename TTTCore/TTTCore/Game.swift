@@ -106,7 +106,7 @@ public class Game : Codable {
 		var decideWhenTheGameEndsBy:			HowToDecideWhenTheGameEnds = .firstScorerWinsOrDrawWhenExhausted
 	}
 
-	public typealias 		Player				= String
+	public struct			Player				{ public let name: String, tag: UUID }
 	public typealias 		PlayerNumber		= Int
 	public static let		noPlayerNumber		= PlayerNumber(0)
 
@@ -166,7 +166,8 @@ public class Game : Codable {
 
 
 	// MARK: -
-	public struct PlayerHostMessage : Codable {
+	public enum PlayerHostMessage {
+		case addPlayer(name: String, tag: UUID)
 	}
 	public typealias PlayerHost = AnyPublisher<PlayerHostMessage, Never>
 	public typealias PlayerHostID = UUID
@@ -193,6 +194,10 @@ public class Game : Codable {
 	}
 
 	func playerHost(id: PlayerHostID, message: PlayerHostMessage) {
+		switch message {
+			case let .addPlayer(name, tag):
+				_ = addPlayer(.init(name: name, tag: tag))
+		}
 	}
 
 
@@ -441,5 +446,52 @@ extension Game.Issue : CustomStringConvertible {
 		case .cantPlayThere:								return "cantPlayThere"
 	} }
 }
+
+
+
+// MARK: -
+extension Game.Player : Codable, ExpressibleByStringLiteral {
+	public init(_ name: String, tag: UUID = UUID()) {
+		self.name = name ; self.tag = tag
+	}
+	public init(stringLiteral s: StaticString) {
+		self.name = String(describing: s) ; self.tag = UUID()
+	}
+}
+
+
+
+// MARK: -
+extension Game.PlayerHostMessage : Codable {
+
+	enum Key : String, CodingKey { case message, name, tag }
+
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.container(keyedBy: Key.self)
+		let message = try container.decode(String.self, forKey: .message)
+		switch message {
+			case "addPlayer":
+				let name = try container.decode(String.self, forKey: .name)
+				let tag = try container.decode(UUID.self, forKey: .tag)
+				self = .addPlayer(name: name, tag: tag)
+			default:
+				throw DecodingError.dataCorruptedError(
+					forKey: .message, in: container,
+					debugDescription: "Message not recognised: \(message)")
+		}
+	}
+
+	public func encode(to encoder: Encoder) throws {
+		var container = encoder.container(keyedBy: Key.self)
+		switch self {
+			case let .addPlayer(name, tag):
+				try container.encode("addPlayer", forKey: .message)
+				try container.encode(name, forKey: .name)
+				try container.encode(tag, forKey: .tag)
+		}
+	}
+
+}
+
 
 
