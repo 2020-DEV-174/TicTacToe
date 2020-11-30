@@ -54,6 +54,17 @@ class GameIOTests: XCTestCase {
 		if case .failure(let error) = result {
 			XCTFail("Could not add player host because \(error)")
 		}
+	}
 
+	func testPlayerHostCanAddPlayer() {
+		let game = GameManager.createGame()
+		let subject = PassthroughSubject<Game.PlayerHostMessage, Never>()
+		let result = game.addPlayerHost(subject.eraseToAnyPublisher())
+		guard case .success(let hostID) = result
+		else { XCTFail("Could not add player host because \(result)") ; return }
+		//
+		let tag = UUID()
+		subject.send(.addPlayer(name: "Player 1", tag: tag))
+		XCTAssertNotNil(game.players.first(where: { $0.tag == tag }))
 	}
 }
