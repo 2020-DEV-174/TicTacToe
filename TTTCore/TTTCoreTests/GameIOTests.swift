@@ -100,7 +100,7 @@ class GameIOTests: XCTestCase {
 		//
 		let position = [0,0]
 		XCTAssertEqual(game.state.board[position], Game.noPlayerNumber)
-		subject.send(.playMove(at: position, by: tag1))
+		subject.send(.playMove(position: position, tag: tag1))
 		XCTAssertEqual(game.state.board[position], game.playerNumber(withTag: tag1))
 	}
 

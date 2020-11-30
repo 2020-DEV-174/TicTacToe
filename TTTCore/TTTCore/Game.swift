@@ -106,7 +106,8 @@ public class Game : Codable {
 		var decideWhenTheGameEndsBy:			HowToDecideWhenTheGameEnds = .firstScorerWinsOrDrawWhenExhausted
 	}
 
-	public struct			Player				{ public let name: String, tag: UUID }
+	public struct			Player				{ public let name: String, tag: PlayerTag }
+	public typealias 		PlayerTag			= UUID
 	public typealias 		PlayerNumber		= Int
 	public static let		noPlayerNumber		= PlayerNumber(0)
 
@@ -167,8 +168,9 @@ public class Game : Codable {
 
 	// MARK: -
 	public enum PlayerHostMessage {
-		case addPlayer(name: String, tag: UUID)
+		case addPlayer(name: String, tag: PlayerTag)
 		case startGame
+		case playMove(position: Board.Position, tag: PlayerTag)
 	}
 	public typealias PlayerHost = AnyPublisher<PlayerHostMessage, Never>
 	public typealias PlayerHostID = UUID
@@ -196,10 +198,12 @@ public class Game : Codable {
 
 	func playerHost(id: PlayerHostID, message: PlayerHostMessage) {
 		switch message {
-			case let .addPlayer(name, tag):
+			case .addPlayer(let name, let tag):
 				_ = addPlayer(.init(name: name, tag: tag))
 			case .startGame:
 				_ = start()
+			case .playMove(let position, let tag):
+				_ = play(playerNumber(withTag: tag), at: position)
 		}
 	}
 
@@ -328,8 +332,11 @@ public class Game : Codable {
 
 
 	// MARK: -
-	@inlinable public func indexOf(playerNumber pn: PlayerNumber) -> Int	{ pn - 1 }
+	@inlinable public func indexOf(playerNumber n: PlayerNumber) -> Int		{ n - 1 }
 	@inlinable public func playerNumber(atIndex i: Int) -> PlayerNumber		{ i + 1 }
+	public func playerNumber(withTag t: PlayerTag) -> PlayerNumber			{
+		players.firstIndex {$0.tag==t} .map { playerNumber(atIndex: $0) } ?? Game.noPlayerNumber
+	}
 
 
 
@@ -454,11 +461,11 @@ extension Game.Issue : CustomStringConvertible {
 
 // MARK: -
 extension Game.Player : Codable, ExpressibleByStringLiteral {
-	public init(_ name: String, tag: UUID = UUID()) {
+	public init(_ name: String, tag: Game.PlayerTag = .init()) {
 		self.name = name ; self.tag = tag
 	}
 	public init(stringLiteral s: StaticString) {
-		self.name = String(describing: s) ; self.tag = UUID()
+		self.name = String(describing: s) ; self.tag = Game.PlayerTag()
 	}
 }
 
@@ -467,18 +474,22 @@ extension Game.Player : Codable, ExpressibleByStringLiteral {
 // MARK: -
 extension Game.PlayerHostMessage : Codable {
 
-	enum Key : String, CodingKey { case message, name, tag }
+	enum Key : String, CodingKey { case message, name, tag, position }
 
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: Key.self)
-		let message = try container.decode(String.self, forKey: .message)
+		let message =	try container.decode(String.self, forKey: .message)
 		switch message {
 			case "addPlayer":
-				let name = try container.decode(String.self, forKey: .name)
-				let tag = try container.decode(UUID.self, forKey: .tag)
-				self = .addPlayer(name: name, tag: tag)
+				let name =		try container.decode(String.self, forKey: .name)
+				let tag =		try container.decode(Game.PlayerTag.self, forKey: .tag)
+				self = 			.addPlayer(name: name, tag: tag)
 			case "startGame":
-				self = .startGame
+				self = 			.startGame
+			case "playMove":
+				let position =	try container.decode(Game.Board.Position.self, forKey: .position)
+				let tag =		try container.decode(Game.PlayerTag.self, forKey: .tag)
+				self =			.playMove(position: position, tag: tag)
 			default:
 				throw DecodingError.dataCorruptedError(
 					forKey: .message, in: container,
@@ -490,12 +501,16 @@ extension Game.PlayerHostMessage : Codable {
 		var container = encoder.container(keyedBy: Key.self)
 		let message: String
 		switch self {
-			case let .addPlayer(name, tag):
+			case .addPlayer(let name, let tag):
 				message = "addPlayer"
 				try container.encode(name, forKey: .name)
 				try container.encode(tag, forKey: .tag)
 			case .startGame:
 				message = "startGame"
+			case .playMove(let position, let tag):
+				message = "playMove"
+				try container.encode(position, forKey: .position)
+				try container.encode(tag, forKey: .tag)
 		}
 		try container.encode(message, forKey: .message)
 	}
