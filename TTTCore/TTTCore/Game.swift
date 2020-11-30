@@ -168,6 +168,7 @@ public class Game : Codable {
 	// MARK: -
 	public enum PlayerHostMessage {
 		case addPlayer(name: String, tag: UUID)
+		case startGame
 	}
 	public typealias PlayerHost = AnyPublisher<PlayerHostMessage, Never>
 	public typealias PlayerHostID = UUID
@@ -197,6 +198,8 @@ public class Game : Codable {
 		switch message {
 			case let .addPlayer(name, tag):
 				_ = addPlayer(.init(name: name, tag: tag))
+			case .startGame:
+				_ = start()
 		}
 	}
 
@@ -474,6 +477,8 @@ extension Game.PlayerHostMessage : Codable {
 				let name = try container.decode(String.self, forKey: .name)
 				let tag = try container.decode(UUID.self, forKey: .tag)
 				self = .addPlayer(name: name, tag: tag)
+			case "startGame":
+				self = .startGame
 			default:
 				throw DecodingError.dataCorruptedError(
 					forKey: .message, in: container,
@@ -483,12 +488,16 @@ extension Game.PlayerHostMessage : Codable {
 
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.container(keyedBy: Key.self)
+		let message: String
 		switch self {
 			case let .addPlayer(name, tag):
-				try container.encode("addPlayer", forKey: .message)
+				message = "addPlayer"
 				try container.encode(name, forKey: .name)
 				try container.encode(tag, forKey: .tag)
+			case .startGame:
+				message = "startGame"
 		}
+		try container.encode(message, forKey: .message)
 	}
 
 }

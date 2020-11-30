@@ -76,11 +76,11 @@ class GameIOTests: XCTestCase {
 		let tag2 = UUID()
 		subject.send(.addPlayer(name: "Player 1", tag: tag1))
 		XCTAssertNotNil(game.players.first(where: { $0.tag == tag1 }))
-		subject.send(.addPlayer(name: "Player 2", tag: tag1))
+		subject.send(.addPlayer(name: "Player 2", tag: tag2))
 		XCTAssertNotNil(game.players.first(where: { $0.tag == tag2 }))
 		//
 		XCTAssertEqual(game.stage, .waitingToStart)
-		subject.send(.start)
+		subject.send(.startGame)
 		XCTAssertEqual(game.stage, .nextPlayBy(1))
 	}
 
