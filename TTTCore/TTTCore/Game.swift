@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 
 
@@ -115,7 +116,7 @@ public class Game : Codable {
 	public let				config:				Config
 	public private(set) var players				= [Player]()
 	public var				stage:				Stage { state.stage }
-	public private(set) var state:				State
+	@Published public private(set) var state:	State
 
 
 
@@ -288,6 +289,27 @@ public class Game : Codable {
 	// MARK: -
 	@inlinable public func indexOf(playerNumber pn: PlayerNumber) -> Int	{ pn - 1 }
 	@inlinable public func playerNumber(atIndex i: Int) -> PlayerNumber		{ i + 1 }
+
+
+
+	// MARK: -
+	enum Key : String, CodingKey {
+		case config, players, state
+	}
+
+	public required init(from decoder: Decoder) throws {
+		let container = try decoder.container(keyedBy: Key.self)
+		config = try container.decode(Config.self, forKey: .config)
+		players = try container.decode([Player].self, forKey: .players)
+		state = try container.decode(State.self, forKey: .state)
+	}
+
+	public func encode(to encoder: Encoder) throws {
+		var container = encoder.container(keyedBy: Key.self)
+		try container.encode(config, forKey: .config)
+		try container.encode(players, forKey: .players)
+		try container.encode(state, forKey: .state)
+	}
 }
 
 

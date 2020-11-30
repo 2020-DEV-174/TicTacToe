@@ -25,7 +25,7 @@ class GameIOTests: XCTestCase {
 		keepAlive.removeAll()
 	}
 
-	func testGameStateChangeIsObservable() {
+	func testGameStateChangeArePublished() {
 		let game = GameManager.createGame()
 		let initialState = game.state
 		var receivedState = initialState
