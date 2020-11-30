@@ -11,15 +11,24 @@ import Combine
 
 
 
-/// The core of a game, nominally TicTacToe, encapsulating data and rules
+/// The core of a game, nominally TicTacToe, encapsulating data and rules.
+///
+/// The game progresses through atomic updates to its `State` through which you can discover the
+/// `Stage` of the game (waiting for players / whose turn to go / final result), the `Board`,
+/// yielding the occupant of each play space, a `Playable` struct that yields which spaces the
+/// current player is allowed to play, and the `Scores`, yielding the board space combinations from
+/// which a player has scored.
+///
+/// An instance of the game can be controlled directly through `addPlayer(:)`, `start()` and
+/// `play(:at:)`, or remotely, using the Combine framework facilities, by one or more `PlayerHost`s,
+/// to which the game will listen for messages, and which can subscribe to changes in the game state.
+///
+/// The game initialises its own `Config` from rules received through a `GameConfig`'` struct.
+/// Nominally the rules are for TicTacToe on a 3x3 board, but some of the rules have parameters that
+/// can be adjusted, and this class anticipates that different rule variations can be implemented in
+/// future.
 ///
 public class Game : Codable {
-
-	public enum Issue : Error {
-		case notEnoughPlayers, alreadyStarted, notAPlayer, notYourTurn, cantPlayThere
-	}
-
-	public typealias Outcome = Result<State, Issue>
 
 	public struct Board : Codable {
 
@@ -58,10 +67,6 @@ public class Game : Codable {
 	public typealias ScoringPlays = [ScoringCombination]
 	public typealias Scores = [PlayerNumber:ScoringPlays]
 
-	public enum Stage {
-		case waitingForPlayers, waitingToStart, nextPlayBy(PlayerNumber), wonBy(PlayerNumber), drawn
-	}
-
 	/// Encapulate all the truth that players need to know for game progression: board occupancy,
 	/// whose move if any or game outcome, and what positions are possible for next player.
 	///
@@ -86,6 +91,16 @@ public class Game : Codable {
 		}
 		public typealias		Playable = DimensionalStorage<Bool>
 	}
+
+	public enum Stage {
+		case waitingForPlayers, waitingToStart, nextPlayBy(PlayerNumber), wonBy(PlayerNumber), drawn
+	}
+
+	public enum Issue : Error {
+		case notEnoughPlayers, alreadyStarted, notAPlayer, notYourTurn, cantPlayThere
+	}
+
+	public typealias Outcome = Result<State, Issue>
 
 	public enum HowToChooseInitialPlayer : String { case player1 }
 	public enum HowToChooseNextPlayer : String { case rotateAscending }
