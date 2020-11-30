@@ -84,4 +84,24 @@ class GameIOTests: XCTestCase {
 		XCTAssertEqual(game.stage, .nextPlayBy(1))
 	}
 
+	func testPlayerHostCanPlayAMove() {
+		let game = GameManager.createGame()
+		let subject = PassthroughSubject<Game.PlayerHostMessage, Never>()
+		let result = game.addPlayerHost(subject.eraseToAnyPublisher())
+		XCTAssertNotNil(try? result.get(), "Could not add player host because \(result)")
+		let tag1 = UUID()
+		let tag2 = UUID()
+		subject.send(.addPlayer(name: "Player 1", tag: tag1))
+		XCTAssertNotNil(game.players.first(where: { $0.tag == tag1 }))
+		subject.send(.addPlayer(name: "Player 2", tag: tag2))
+		XCTAssertNotNil(game.players.first(where: { $0.tag == tag2 }))
+		subject.send(.startGame)
+		XCTAssertEqual(game.stage, .nextPlayBy(1))
+		//
+		let position = [0,0]
+		XCTAssertEqual(game.state.board[position], Game.noPlayerNumber)
+		subject.send(.playMove(at: position, by: tag1))
+		XCTAssertEqual(game.state.board[position], game.playerNumber(withTag: tag1))
+	}
+
 }
