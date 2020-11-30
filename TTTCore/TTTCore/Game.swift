@@ -194,6 +194,7 @@ public class Game : Codable {
 	}
 
 	func playerHost(id: PlayerHostID, completed: Subscribers.Completion<Never>) {
+		hostConnections.removeValue(forKey: id)
 	}
 
 	func playerHost(id: PlayerHostID, message: PlayerHostMessage) {

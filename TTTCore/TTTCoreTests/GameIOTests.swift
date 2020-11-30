@@ -104,4 +104,7 @@ class GameIOTests: XCTestCase {
 		XCTAssertEqual(game.state.board[position], game.playerNumber(withTag: tag1))
 	}
 
+	// Future (not a priority at the moment): test that player host can leave game
+	// explicitly or on dealloc, and remove all added players and leave game in
+	// consistent state.
 }
