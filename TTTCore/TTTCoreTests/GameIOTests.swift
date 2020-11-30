@@ -49,7 +49,7 @@ class GameIOTests: XCTestCase {
 
 	func testGameCanListenToPlayerHosts() {
 		let game = GameManager.createGame()
-		let subject = PassthroughSubject<PlayerHostMessage, Never>()
+		let subject = PassthroughSubject<Game.PlayerHostMessage, Never>().eraseToAnyPublisher()
 		let result = game.addPlayerHost(subject)
 		if case .failure(let error) = result {
 			XCTFail("Could not add player host because \(error)")

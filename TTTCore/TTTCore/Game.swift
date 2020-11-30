@@ -165,6 +165,39 @@ public class Game : Codable {
 
 
 
+	// MARK: -
+	public struct PlayerHostMessage : Codable {
+	}
+	public typealias PlayerHost = AnyPublisher<PlayerHostMessage, Never>
+	public typealias PlayerHostID = UUID
+	var hostConnections = [PlayerHostID:AnyCancellable]()
+
+
+
+	public func addPlayerHost(_ source: PlayerHost) -> Result<PlayerHostID, Issue> {
+		let hostID = PlayerHostID()
+		let sink = source
+			.sink(
+				receiveCompletion: { [unowned self] in
+					self.playerHost(id: hostID, completed: $0)
+				},
+				receiveValue: { [unowned self] in
+					self.playerHost(id: hostID, message: $0)
+				}
+			)
+		hostConnections[hostID] = sink
+		return .success(hostID)
+	}
+
+	func playerHost(id: PlayerHostID, completed: Subscribers.Completion<Never>) {
+	}
+
+	func playerHost(id: PlayerHostID, message: PlayerHostMessage) {
+	}
+
+
+
+	// MARK: -
 	/// Add player
 	public func addPlayer(_ player: Player) -> PlayerNumber {
 		guard players.count < config.maxPlayers
