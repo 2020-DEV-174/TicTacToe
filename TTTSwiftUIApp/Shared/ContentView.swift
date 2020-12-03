@@ -6,16 +6,49 @@
 //
 
 import SwiftUI
+import TTTCore
+
+
 
 struct ContentView: View {
-    var body: some View {
-        Text("Hello, world!")
-            .padding()
+	@ObservedObject var game: Game
+	var body: some View {
+		VStack {
+			Text(game.config.name)
+				.accessibility(identifier: "Name")
+				.padding()
+			Spacer()
+			HStack {
+				Spacer()
+				VStack {
+					Button(action: {}) {
+						Text(game.player(1)?.name ?? "Choose…")
+					}
+					Text("Player 1")
+						.accessibility(identifier: "Player 1")
+				}
+				Spacer()
+				VStack {
+					Button(action: {}) {
+						Text(game.player(2)?.name ?? "Choose…")
+					}
+					Text("Player 2")
+						.accessibility(identifier: "Player 2")
+				}
+				Spacer()
+			}
+			Spacer()
+			Text("About \(game.config.name)")
+				.accessibility(identifier: "About")
+				.padding()
+		}
     }
 }
 
+
+
 struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+	static var previews: some View {
+		ContentView(game: GameManager.createGame())
+	}
 }

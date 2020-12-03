@@ -14,6 +14,8 @@
 		AE22F154256F0398007EF8B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE22F13F256F0398007EF8B6 /* Assets.xcassets */; };
 		AE22F155256F0398007EF8B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE22F13F256F0398007EF8B6 /* Assets.xcassets */; };
 		AE88D95325790BCC00D6A0CD /* TTTAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE88D95225790BCC00D6A0CD /* TTTAppUITests.swift */; };
+		AEDDEE992579571A00990752 /* TTTCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEDDEE982579571A00990752 /* TTTCore.framework */; };
+		AEDDEE9A2579571A00990752 /* TTTCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AEDDEE982579571A00990752 /* TTTCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +35,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				AEDDEE9A2579571A00990752 /* TTTCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -51,6 +54,7 @@
 		AE88D95025790BCC00D6A0CD /* TTT (iOS) UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TTT (iOS) UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE88D95225790BCC00D6A0CD /* TTTAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTTAppUITests.swift; sourceTree = "<group>"; };
 		AE88D95425790BCC00D6A0CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AEDDEE982579571A00990752 /* TTTCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TTTCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEDDEE992579571A00990752 /* TTTCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +91,7 @@
 				AE22F14D256F0398007EF8B6 /* macOS */,
 				AE88D94025790A8800D6A0CD /* Tests */,
 				AE22F145256F0398007EF8B6 /* Products */,
+				AEDDEE972579571A00990752 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -181,6 +187,14 @@
 			children = (
 			);
 			path = iOS;
+			sourceTree = "<group>";
+		};
+		AEDDEE972579571A00990752 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AEDDEE982579571A00990752 /* TTTCore.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
