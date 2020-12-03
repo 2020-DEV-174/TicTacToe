@@ -13,7 +13,18 @@
 		AE22F153256F0398007EF8B6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE22F13E256F0395007EF8B6 /* ContentView.swift */; };
 		AE22F154256F0398007EF8B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE22F13F256F0398007EF8B6 /* Assets.xcassets */; };
 		AE22F155256F0398007EF8B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE22F13F256F0398007EF8B6 /* Assets.xcassets */; };
+		AE88D95325790BCC00D6A0CD /* TTTAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE88D95225790BCC00D6A0CD /* TTTAppUITests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AE88D95525790BCC00D6A0CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE22F138256F0394007EF8B6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AE22F143256F0398007EF8B6;
+			remoteInfo = "TTT (iOS)";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		AE22F171256F05CD007EF8B6 /* Embed Frameworks */ = {
@@ -37,6 +48,9 @@
 		AE22F14C256F0398007EF8B6 /* TTT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TTT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE22F14E256F0398007EF8B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE22F14F256F0398007EF8B6 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
+		AE88D95025790BCC00D6A0CD /* TTT (iOS) UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TTT (iOS) UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE88D95225790BCC00D6A0CD /* TTTAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTTAppUITests.swift; sourceTree = "<group>"; };
+		AE88D95425790BCC00D6A0CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +68,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AE88D94D25790BCC00D6A0CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -63,6 +84,7 @@
 				AE22F13C256F0395007EF8B6 /* Shared */,
 				AE22F146256F0398007EF8B6 /* iOS */,
 				AE22F14D256F0398007EF8B6 /* macOS */,
+				AE88D94025790A8800D6A0CD /* Tests */,
 				AE22F145256F0398007EF8B6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -82,6 +104,7 @@
 			children = (
 				AE22F144256F0398007EF8B6 /* TTT.app */,
 				AE22F14C256F0398007EF8B6 /* TTT.app */,
+				AE88D95025790BCC00D6A0CD /* TTT (iOS) UITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -101,6 +124,63 @@
 				AE22F14F256F0398007EF8B6 /* macOS.entitlements */,
 			);
 			path = macOS;
+			sourceTree = "<group>";
+		};
+		AE88D94025790A8800D6A0CD /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				AE88D94125790A9200D6A0CD /* UI */,
+				AE88D94525790AC100D6A0CD /* Unit */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		AE88D94125790A9200D6A0CD /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				AE88D95225790BCC00D6A0CD /* TTTAppUITests.swift */,
+				AE88D94325790AA900D6A0CD /* macOS */,
+				AE88D94225790A9A00D6A0CD /* iOS */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		AE88D94225790A9A00D6A0CD /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				AE88D95425790BCC00D6A0CD /* Info.plist */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		AE88D94325790AA900D6A0CD /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = macOS;
+			sourceTree = "<group>";
+		};
+		AE88D94525790AC100D6A0CD /* Unit */ = {
+			isa = PBXGroup;
+			children = (
+				AE88D94625790AC100D6A0CD /* macOS */,
+				AE88D94A25790AC100D6A0CD /* iOS */,
+			);
+			path = Unit;
+			sourceTree = "<group>";
+		};
+		AE88D94625790AC100D6A0CD /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = macOS;
+			sourceTree = "<group>";
+		};
+		AE88D94A25790AC100D6A0CD /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,6 +221,24 @@
 			productReference = AE22F14C256F0398007EF8B6 /* TTT.app */;
 			productType = "com.apple.product-type.application";
 		};
+		AE88D94F25790BCC00D6A0CD /* TTT (iOS) UITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE88D95725790BCC00D6A0CD /* Build configuration list for PBXNativeTarget "TTT (iOS) UITests" */;
+			buildPhases = (
+				AE88D94C25790BCC00D6A0CD /* Sources */,
+				AE88D94D25790BCC00D6A0CD /* Frameworks */,
+				AE88D94E25790BCC00D6A0CD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AE88D95625790BCC00D6A0CD /* PBXTargetDependency */,
+			);
+			name = "TTT (iOS) UITests";
+			productName = "TTTAppUITests-iOS";
+			productReference = AE88D95025790BCC00D6A0CD /* TTT (iOS) UITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -156,6 +254,10 @@
 					};
 					AE22F14B256F0398007EF8B6 = {
 						CreatedOnToolsVersion = 12.2;
+					};
+					AE88D94F25790BCC00D6A0CD = {
+						CreatedOnToolsVersion = 12.2;
+						TestTargetID = AE22F143256F0398007EF8B6;
 					};
 				};
 			};
@@ -174,6 +276,7 @@
 			targets = (
 				AE22F143256F0398007EF8B6 /* TTT (iOS) */,
 				AE22F14B256F0398007EF8B6 /* TTT (macOS) */,
+				AE88D94F25790BCC00D6A0CD /* TTT (iOS) UITests */,
 			);
 		};
 /* End PBXProject section */
@@ -192,6 +295,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE22F155256F0398007EF8B6 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE88D94E25790BCC00D6A0CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,7 +326,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AE88D94C25790BCC00D6A0CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE88D95325790BCC00D6A0CD /* TTTAppUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AE88D95625790BCC00D6A0CD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AE22F143256F0398007EF8B6 /* TTT (iOS) */;
+			targetProxy = AE88D95525790BCC00D6A0CD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		AE22F156256F0398007EF8B6 /* Debug */ = {
@@ -417,6 +543,47 @@
 			};
 			name = Release;
 		};
+		AE88D95825790BCC00D6A0CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Tests/UI/iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.2020-DEV-174.TTTAppUITests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "TTT (iOS)";
+			};
+			name = Debug;
+		};
+		AE88D95925790BCC00D6A0CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Tests/UI/iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.2020-DEV-174.TTTAppUITests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "TTT (iOS)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -443,6 +610,15 @@
 			buildConfigurations = (
 				AE22F15C256F0398007EF8B6 /* Debug */,
 				AE22F15D256F0398007EF8B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AE88D95725790BCC00D6A0CD /* Build configuration list for PBXNativeTarget "TTT (iOS) UITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE88D95825790BCC00D6A0CD /* Debug */,
+				AE88D95925790BCC00D6A0CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
