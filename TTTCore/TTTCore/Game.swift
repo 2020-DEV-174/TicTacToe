@@ -28,7 +28,7 @@ import Combine
 /// can be adjusted, and this class anticipates that different rule variations can be implemented in
 /// future.
 ///
-public class Game : Codable {
+public class Game : Codable, ObservableObject {
 
 	public struct Board : Codable {
 
@@ -352,6 +352,16 @@ public class Game : Codable {
 	@inlinable public func playerNumber(atIndex i: Int) -> PlayerNumber		{ i + 1 }
 	public func playerNumber(withTag t: PlayerTag) -> PlayerNumber			{
 		players.firstIndex {$0.tag==t} .map { playerNumber(atIndex: $0) } ?? Game.noPlayerNumber
+	}
+
+	public func player(_ p: PlayerNumber) -> Player? {
+		let i = indexOf(playerNumber: p)
+		guard 0 <= i, i < players.count else { return nil }
+		return players[i]
+	}
+
+	public func player(_ t: PlayerTag) -> Player? {
+		players.first {$0.tag==t}
 	}
 
 
