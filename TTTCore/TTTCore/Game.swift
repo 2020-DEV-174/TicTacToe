@@ -33,7 +33,7 @@ public class Game : Codable, ObservableObject {
 	public struct Board : Codable {
 
 		public var dimensions:	Storage.Dimensions { storage.dimensions }
-		public var count:		Storage.Index { storage.count }
+		public var count:		Index { storage.count }
 		public var isEmpty: 	Bool { nil == storage.storage.first(where: {$0 != Game.noPlayerNumber}) }
 
 		@inlinable
@@ -45,12 +45,15 @@ public class Game : Codable, ObservableObject {
 		}
 
 		@inlinable
-		public subscript(i: Storage.Index) -> PlayerNumber {
+		public subscript(i: Index) -> PlayerNumber {
 			get { storage[i] }
 			mutating set { if storage[i] != newValue {
 				storage[i] = newValue
 			} }
 		}
+
+		@inlinable public func indexOf(position p: Position) -> Index { storage.indexOf(position: p) }
+		@inlinable public func positionOf(index i: Index) -> Position { storage.positionOf(index: i) }
 
 		@usableFromInline
 		var storage:			Storage
@@ -61,6 +64,7 @@ public class Game : Codable, ObservableObject {
 
 		public typealias		Storage = DimensionalStorage<PlayerNumber>
 		public typealias		Position = Storage.Position
+		public typealias		Index = Storage.Index
 	}
 
 	public typealias ScoringCombination = [Board.Position]
