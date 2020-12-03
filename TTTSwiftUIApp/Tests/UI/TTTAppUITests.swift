@@ -40,8 +40,8 @@ class TTTAppUITests: XCTestCase {
 	}
 
 	func testFirstSceneShowsBoardSquares() {
-		check(.staticText, "A1", within: app)
-		check(.staticText, "B2", within: app)
-		check(.staticText, "C3", within: app)
+		check(.image, "A1", within: app)
+		check(.image, "B2", within: app)
+		check(.image, "C3", within: app)
 	}
 }

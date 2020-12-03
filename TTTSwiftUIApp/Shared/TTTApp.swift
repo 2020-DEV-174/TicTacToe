@@ -12,7 +12,7 @@ import TTTCore
 
 @main
 struct TTTApp: App {
-	let game = GameManager.createGame()
+	@StateObject private var game = GameManager.createGame()
     var body: some Scene {
         WindowGroup {
             ContentView(game: game)
