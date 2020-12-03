@@ -38,4 +38,10 @@ class TTTAppUITests: XCTestCase {
 		check(.staticText, "Player 2", within: app)
 		check(.staticText, "About", within: app)
 	}
+
+	func testFirstSceneShowsBoardSquares() {
+		check(.staticText, "A1", within: app)
+		check(.staticText, "B2", within: app)
+		check(.staticText, "C3", within: app)
+	}
 }
