@@ -8,19 +8,34 @@
 
 import XCTest
 
+
+
 class TTTAppUITests: XCTestCase {
 
+	let app = XCUIApplication()
+
 	override func setUpWithError() throws {
-		// Put setup code here. This method is called before the invocation of each test method in the class.
-
-		// In UI tests it is usually best to stop immediately when a failure occurs.
 		continueAfterFailure = false
-
-		// In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+		app.launch()
 	}
 
 	override func tearDownWithError() throws {
-		// Put teardown code here. This method is called after the invocation of each test method in the class.
 	}
 
+	func check(_ type: XCUIElement.ElementType, _ id: String,
+			   exists: Bool = true, isHittable: Bool? = nil,
+			   within elem: XCUIElement) {
+		let e = elem.descendants(matching: type)[id]
+		XCTAssertEqual(e.exists, exists, "\(type) '\(id)' should\(!exists ? " not":"") exist within \(elem)")
+		if let isHittable = isHittable {
+			XCTAssertEqual(e.isHittable, isHittable, "\(type) '\(id)' should\(!exists ? " not":"") be hittable within \(elem)")
+		}
+	}
+
+	func testGoStraightToSceneWithGameNameBoardPlayer1Player2() throws {
+		check(.staticText, "Name", within: app)
+		check(.staticText, "Player 1", within: app)
+		check(.staticText, "Player 2", within: app)
+		check(.staticText, "About", within: app)
+	}
 }
