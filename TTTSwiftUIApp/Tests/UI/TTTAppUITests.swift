@@ -41,4 +41,13 @@ class TTTAppUITests: XCTestCase {
 		check(.image, "B2", within: app)
 		check(.image, "C3", within: app)
 	}
+
+	func testTapEmptySquareA1PlacesXInSquare() {
+		let imageA1 = app.descendants(matching: .image)["A1"]
+		XCTAssert(imageA1.exists)
+		XCTAssert(imageA1.isHittable)
+		XCTAssertEqual(imageA1.accessibilityValue, "Empty")
+		imageA1.tap()
+		XCTAssertEqual(imageA1.accessibilityValue, "X")
+	}
 }
