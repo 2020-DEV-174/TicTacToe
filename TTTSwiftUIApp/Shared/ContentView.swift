@@ -50,8 +50,17 @@ struct ContentView: View {
 
 
 struct ContentView_Previews: PreviewProvider {
+
+	static func testGame() -> Game {
+		let game = GameManager.createGame()
+		_ = game.addPlayer("Me")
+		_ = game.addPlayer("Randolf the Random")
+		_ = game.start()
+		return game
+	}
+
 	static var previews: some View {
-		ContentView(game: GameManager.createGame())
+		ContentView(game: testGame())
 	}
 }
 
@@ -90,8 +99,9 @@ struct BoardSquare : View, Identifiable {
 	var game:			Game
 	let position:		Game.Board.Position
 	let id:				UUID
+	var playedBy:		Game.PlayerNumber { game.state.board[position] }
 
-	var imageName: String { switch game.state.board[position] {
+	var imageName: String { switch playedBy {
 		case 1:  return "X"
 		case 2:  return "O"
 		default: return "E"
@@ -115,10 +125,22 @@ struct BoardSquare : View, Identifiable {
 		return s
 	}
 
+	var accessibilityValue: LocalizedStringKey { switch playedBy {
+		case 1:  return "X"
+		case 2:  return "O"
+		default: return "Empty"
+	} }
+
 	var body: some View {
 		Image(imageName)
 			.accessibilityIdentifier(accessibilityId)
+			.accessibilityValue(accessibilityValue)
 			.background(Color.yellow)
+			.onTapGesture {
+				if case .nextPlayBy(let player) = game.stage, playedBy == Game.noPlayerNumber {
+					_ = game.play(player, at: position)
+				}
+			}
 	}
 }
 
