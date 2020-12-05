@@ -70,4 +70,31 @@ class TTTAppUITests: XCTestCase {
 			play(square: id, expect: result)
 		}
 	}
+
+	func test04_CanSeeWhoseTurnToPlayOrFinalResult() {
+		func play(square id: String, expect value: String, hittable items: [String:Bool]) {
+			items.forEach {
+				let element = app.descendants(matching: .any)[$0.key]
+				XCTAssert(element.exists == $0.value, "\n    Expected \"\($0.key)\"\($0.value ?"":" not") to be hittable when about to play square \"\(id)\"\n")
+				XCTAssert(element.isHittable == $0.value, "\n    Expected \"\($0.key)\"\($0.value ?"":" not") to be hittable when about to play square \"\(id)\"\n")
+			}
+			let imageBefore = app.images[id]
+			XCTAssert(imageBefore.exists)
+			XCTAssert(imageBefore.isHittable)
+			XCTAssertEqual(imageBefore.value as? String, "Empty")
+			imageBefore.tap()
+			let imageAfter = app.images[id]
+			XCTAssertEqual(imageAfter.value as? String, value)
+		}
+		for (id, result, items) in [
+			("A1","X", ["Player 1 to play":true, "Player 2 to play":false, "Game result":false]),
+			("A2","O", ["Player 1 to play":false, "Player 2 to play":true, "Game result":false]),
+			("B1","X", ["Player 1 to play":true, "Player 2 to play":false, "Game result":false]),
+			("B2","O", ["Player 1 to play":false, "Player 2 to play":true, "Game result":false]),
+			("C1","X", ["Player 1 to play":true, "Player 2 to play":false, "Game result":false]),
+			("C2","Empty", ["Player 1 to play":false, "Player 2 to play":false, "Game result":true]),
+		] {
+			play(square: id, expect: result, hittable: items)
+		}
+	}
 }
