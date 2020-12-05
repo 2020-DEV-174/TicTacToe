@@ -15,7 +15,7 @@ struct ContentView: View {
 	var body: some View {
 		VStack {
 			Text(game.config.name)
-				.accessibility(identifier: "Name")
+				.accessibilityIdentifier("Name")
 				.padding()
 			Spacer()
 			BoardView(game: game)
@@ -27,7 +27,7 @@ struct ContentView: View {
 						Text(game.player(1)?.name ?? "Choose…")
 					}
 					Text("Player 1")
-						.accessibility(identifier: "Player 1")
+						.accessibilityIdentifier("Player 1")
 				}
 				Spacer()
 				VStack {
@@ -35,13 +35,13 @@ struct ContentView: View {
 						Text(game.player(2)?.name ?? "Choose…")
 					}
 					Text("Player 2")
-						.accessibility(identifier: "Player 2")
+						.accessibilityIdentifier("Player 2")
 				}
 				Spacer()
 			}
 			Spacer()
 			Text("About \(game.config.name)")
-				.accessibility(identifier: "About")
+				.accessibilityIdentifier("About")
 				.padding()
 		}
     }
@@ -100,30 +100,24 @@ struct BoardSquare : View, Identifiable {
 	func encode(_ n: Int, using code: String) -> String {
 		let (q, r) = n.quotientAndRemainder(dividingBy: code.count)
 		var s = q > 0 ? encode(q, using: code) : ""
-		let i = code.index(code.startIndex, offsetBy: r)
-		let c = code[i]
+		let c = code[code.index(code.startIndex, offsetBy: r)]
 		s.append(c)
 		return s
 	}
 
 	var accessibilityId: String {
-		let encodings: [(separator: String, offset: Int, code: String)] = [
-			("", 0, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
-			("", 1, "0123456789"),
-			("z", 1, "0123456789"),
-		]
+		let formats = [("",0,"ABCDEFGHIJKLMNOPQRSTUVWXYZ"), ("",1,"0123456789"), ("z",1,"0123456789")]
 		var s = ""
-		for i in 0..<position.count {
-			let (separator, offset, code) = encodings[min(i, encodings.count-1)]
-			s.append(separator)
-			s.append(encode(position[i] + offset, using: code))
+		for axis in 0..<position.count {
+			let (separator, offset, code) = formats[min(axis, formats.count-1)]
+			s += separator ; s += encode(position[axis] + offset, using: code)
 		}
 		return s
 	}
 
 	var body: some View {
 		Image(imageName)
-			.accessibility(identifier: accessibilityId)
+			.accessibilityIdentifier(accessibilityId)
 			.background(Color.yellow)
 	}
 }
