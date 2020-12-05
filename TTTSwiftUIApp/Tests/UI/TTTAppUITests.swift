@@ -32,7 +32,7 @@ class TTTAppUITests: XCTestCase {
 		}
 	}
 
-	func testGoStraightToSceneWithGameNameBoardPlayer1Player2() throws {
+	func test01_GoStraightToSceneWithGameNameBoardPlayer1Player2() throws {
 		check(.staticText, "Name", within: app)
 		check(.staticText, "Player 1", within: app)
 		check(.staticText, "Player 2", within: app)
@@ -42,7 +42,7 @@ class TTTAppUITests: XCTestCase {
 		check(.image, "C3", within: app)
 	}
 
-	func testTapEmptySquareA1PlacesXInSquare() {
+	func test02_TapEmptySquareA1PlacesXInSquare() {
 		var imageA1 = app.descendants(matching: .image)["A1"]
 		XCTAssert(imageA1.exists)
 		XCTAssert(imageA1.isHittable)
@@ -52,7 +52,7 @@ class TTTAppUITests: XCTestCase {
 		XCTAssertEqual(imageA1.value as? String, "X")
 	}
 
-	func testCanPlayAgainstSelfUntilNoMoreMovesPossible() {
+	func test03_CanPlayAgainstSelfUntilNoMoreMovesPossible() {
 		func play(square id: String, expect value: String) {
 			let imageBefore = app.images[id]
 			XCTAssert(imageBefore.exists)
