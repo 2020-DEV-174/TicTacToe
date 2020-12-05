@@ -51,4 +51,23 @@ class TTTAppUITests: XCTestCase {
 		imageA1 = app.descendants(matching: .image)["A1"]
 		XCTAssertEqual(imageA1.value as? String, "X")
 	}
+
+	func testCanPlayAgainstSelfUntilNoMoreMovesPossible() {
+		func play(square id: String, expect value: String) {
+			let imageBefore = app.images[id]
+			XCTAssert(imageBefore.exists)
+			XCTAssert(imageBefore.isHittable)
+			XCTAssertEqual(imageBefore.value as? String, "Empty")
+			imageBefore.tap()
+			let imageAfter = app.images[id]
+			XCTAssertEqual(imageAfter.value as? String, value)
+		}
+		for (id, result) in [
+			("A1","X"), ("A2","O"),
+			("B1","X"), ("B2","O"),
+			("C1","X"), ("C2","Empty"),
+		] {
+			play(square: id, expect: result)
+		}
+	}
 }
