@@ -84,6 +84,7 @@ struct BoardView : View {
 				BoardSquare(game: game, position: $0.pos, id: $0.id)
 			}
 		}
+		.aspectRatio(1.0, contentMode: .fit)
 	}
 
 	struct IdentifiablePosition : Identifiable {
