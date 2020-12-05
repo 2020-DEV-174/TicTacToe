@@ -12,6 +12,13 @@ import TTTCore
 
 struct ContentView: View {
 	@ObservedObject var game: Game
+
+	var resultView: Text? { switch game.stage {
+		case .drawn:			return Text("Its a Draw!")
+		case .wonBy(let n):		return Text(LocalizedStringKey("Player \(n) Wins!"))
+		default:				return nil
+	} }
+
 	var body: some View {
 		VStack {
 			Text(game.config.name)
@@ -20,6 +27,10 @@ struct ContentView: View {
 			Spacer()
 			BoardView(game: game)
 			Spacer()
+			if let resultView = resultView {
+				resultView
+					.accessibilityIdentifier("Game result")
+			}
 			HStack {
 				Spacer()
 				VStack {
@@ -28,6 +39,10 @@ struct ContentView: View {
 					}
 					Text("Player 1")
 						.accessibilityIdentifier("Player 1")
+					if case .nextPlayBy(1) = game.stage {
+						Text("to play")
+							.accessibilityIdentifier("Player 1 to play")
+					}
 				}
 				Spacer()
 				VStack {
@@ -36,6 +51,10 @@ struct ContentView: View {
 					}
 					Text("Player 2")
 						.accessibilityIdentifier("Player 2")
+					if case .nextPlayBy(2) = game.stage {
+						Text("to play")
+							.accessibilityIdentifier("Player 2 to play")
+					}
 				}
 				Spacer()
 			}
