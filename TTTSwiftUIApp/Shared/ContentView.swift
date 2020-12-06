@@ -27,10 +27,6 @@ struct ContentView: View {
 			Spacer()
 			BoardView(game: game)
 			Spacer()
-			if let resultView = resultView {
-				resultView
-					.accessibilityIdentifier("Game result")
-			}
 			HStack {
 				Spacer()
 				VStack {
@@ -59,6 +55,22 @@ struct ContentView: View {
 				Spacer()
 			}
 			Spacer()
+			if let resultView = resultView {
+				resultView
+					.accessibilityIdentifier("Game result")
+			}
+			if game.stage.isStarted, !game.state.played.isEmpty {
+				Button("Restart") {
+					_ = game.restart()
+				}
+				.accessibilityIdentifier("New game")
+			}
+			if game.stage.isFinished {
+				Button("Play Again!") {
+					_ = game.start()
+				}
+				.accessibilityIdentifier("New game")
+			}
 			Text("About \(game.config.name)")
 				.accessibilityIdentifier("About")
 				.padding()
