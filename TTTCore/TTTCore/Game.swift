@@ -21,9 +21,11 @@ import Combine
 ///
 /// An instance of the game can be controlled directly through `addPlayer(:)`, `start()` and
 /// `play(:at:)`, or remotely, using the Combine framework facilities, by one or more `PlayerHost`s,
-/// to which the game will listen for messages, and which can subscribe to changes in the game state.
+/// to which the game will listen for messages, and which can subscribe to changes in the game
+/// state. An in-progress game can be discarded using `restart()` (or by equivalent message from a
+/// PlayerHost), and when a game has finished, a new game can be started using `start()`.
 ///
-/// The game initialises its own `Config` from rules received through a `GameConfig`'` struct.
+/// The game initialises its own `Config` from rules received through a `GameConfig` struct.
 /// Nominally the rules are for TicTacToe on a 3x3 board, but some of the rules have parameters that
 /// can be adjusted, and this class anticipates that different rule variations can be implemented in
 /// future.
@@ -195,6 +197,7 @@ public class Game : Codable, ObservableObject {
 	public enum PlayerHostMessage {
 		case addPlayer(name: String, tag: PlayerTag)
 		case startGame
+		case restartGame
 		case playMove(position: Board.Position, tag: PlayerTag)
 	}
 	public typealias PlayerHost = AnyPublisher<PlayerHostMessage, Never>
@@ -228,6 +231,8 @@ public class Game : Codable, ObservableObject {
 				_ = addPlayer(.init(name: name, tag: tag))
 			case .startGame:
 				_ = start()
+			case .restartGame:
+				_ = restart()
 			case .playMove(let position, let tag):
 				_ = play(playerNumber(withTag: tag), at: position)
 		}
@@ -584,6 +589,8 @@ extension Game.PlayerHostMessage : Codable {
 				self = 			.addPlayer(name: name, tag: tag)
 			case "startGame":
 				self = 			.startGame
+			case "restartGame":
+				self = 			.restartGame
 			case "playMove":
 				let position =	try container.decode(Game.Board.Position.self, forKey: .position)
 				let tag =		try container.decode(Game.PlayerTag.self, forKey: .tag)
@@ -605,6 +612,8 @@ extension Game.PlayerHostMessage : Codable {
 				try container.encode(tag, forKey: .tag)
 			case .startGame:
 				message = "startGame"
+			case .restartGame:
+				message = "restartGame"
 			case .playMove(let position, let tag):
 				message = "playMove"
 				try container.encode(position, forKey: .position)
