@@ -146,5 +146,16 @@ class DimensionalStorageTests: XCTestCase {
 		test(anchor: [0,0], direction: [.descend, .descend], expect: [8,4,0])
 	}
 
+	func testResetToInitialValues() {
+
+		var storage = DimensionalStorage<Int>(dimensions: [3,3])
+		XCTAssert(storage.count == storage.count(of: 0))
+		let values = [Int](1...9)
+		storage.resetTo(initialValues: values)
+		values.enumerated().forEach {
+			XCTAssertEqual($0.element, storage[$0.offset])
+		}
+	}
+
 }
 
