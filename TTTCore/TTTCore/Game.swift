@@ -62,9 +62,12 @@ public class Game : Codable, ObservableObject {
 			storage = Storage(dimensions: d, initialValue: Game.noPlayerNumber)
 		}
 
+		mutating func reset() { storage.resetTo(initialValue: Game.noPlayerNumber) }
+
 		public typealias		Storage = DimensionalStorage<PlayerNumber>
 		public typealias		Position = Storage.Position
 		public typealias		Index = Storage.Index
+		public struct			Move { let player: PlayerNumber ; let position: Position }
 	}
 
 	public typealias ScoringCombination = [Board.Position]
@@ -79,21 +82,24 @@ public class Game : Codable, ObservableObject {
 		public let stage:		Stage
 		public let board:		Board
 		public let playable:	Playable
+		public let played:		Moves
 		public let scores:		Scores
 
 		init(boardDimensions d: Board.Storage.Dimensions) {
 			stage = .waitingForPlayers
 			board = Board(dimensions: d)
 			playable = Playable(dimensions: board.storage.dimensions, initialValue: true)
+			played = []
 			scores = [:]
 		}
-		init(stage s: Stage, board b: Board, playable p: Playable, scores c: Scores) {
-			stage = s ; board = b ; playable = p ; scores = c
+		init(stage s: Stage, board b: Board, playable p: Playable, played m: Moves, scores c: Scores) {
+			stage = s ; board = b ; playable = p ; played = m ; scores = c
 		}
-		func updating(stage s: Stage? = nil, board b: Board? = nil, playable p: Playable? = nil, scores c: Scores? = nil) -> Self {
-			State(stage: s ?? stage, board: b ?? board, playable: p ?? playable, scores: c ?? scores)
+		func updating(stage s: Stage? = nil, board b: Board? = nil, playable p: Playable? = nil, played m: Moves? = nil, scores c: Scores? = nil) -> Self {
+			State(stage: s ?? stage, board: b ?? board, playable: p ?? playable, played: m ?? played, scores: c ?? scores)
 		}
 		public typealias		Playable = DimensionalStorage<Bool>
+		public typealias		Moves = [Board.Move]
 	}
 
 	public enum Stage {
@@ -101,7 +107,7 @@ public class Game : Codable, ObservableObject {
 	}
 
 	public enum Issue : Error {
-		case notEnoughPlayers, alreadyStarted, notAPlayer, notYourTurn, cantPlayThere
+		case notEnoughPlayers, notStarted, alreadyStarted, notAPlayer, notYourTurn, cantPlayThere
 	}
 
 	public typealias Outcome = Result<State, Issue>
@@ -244,23 +250,49 @@ public class Game : Codable, ObservableObject {
 
 
 	// MARK: -
-
 	public func start() -> Outcome {
-		switch stage {
-			case .waitingToStart:			break
-			case .waitingForPlayers:		return .failure(.notEnoughPlayers)
-			default:						return .failure(.alreadyStarted)
+		let playerNumber: PlayerNumber
+
+		if stage.isFinished {
+			playerNumber = chooseInitialPlayerGiven(played: state.played, scores: state.scores)
+		} else if case .waitingToStart = stage {
+			playerNumber = chooseInitialPlayerGiven(played: [], scores: [:])
+		} else if case .waitingForPlayers = stage {
+			return .failure(.notEnoughPlayers)
+		} else {
+			return .failure(.alreadyStarted)
 		}
 
-		let nextPlayerNumber = chooseInitialPlayer()
-		let nextStage = Stage.nextPlayBy(nextPlayerNumber)
-		let playable = decidePlayableCellsGiven(board: state.board, stage: nextStage)
-
-		state = state.updating(stage: nextStage, playable: playable)
+		start(with: playerNumber)
 
 		return .success(state)
 	}
 
+	public func restart() -> Outcome {
+		guard case .nextPlayBy = stage, !state.played.isEmpty
+		else { return .failure(.notStarted) }
+
+		let playerNumber = state.played.first?.player
+						?? chooseInitialPlayerGiven(played: state.played, scores: [:])
+
+		start(with: playerNumber)
+
+		return .success(state)
+	}
+
+	private func start(with playerNumber: PlayerNumber) {
+
+		let nextStage = Stage.nextPlayBy(playerNumber)
+		var board = state.board
+		board.reset()
+		let playable = decidePlayableCellsGiven(board: board, stage: nextStage)
+
+		state = state.updating(stage: nextStage, board: board, playable: playable, played: [], scores: [:])
+	}
+
+
+
+	// MARK: -
 	public func play(_ playerNumber: PlayerNumber, at position: Board.Position) -> Outcome {
 		let playerIndex = indexOf(playerNumber: playerNumber)
 
@@ -271,23 +303,29 @@ public class Game : Codable, ObservableObject {
 		guard state.playable[position]
 		else { return .failure(.cantPlayThere) }
 
-		let nextPlayerNumber = chooseNextPlayer(afterPlayBy: playerNumber)
-		var nextStage = Stage.nextPlayBy(nextPlayerNumber)
+		let move = Board.Move(playerNumber, position)
 		var board = state.board
 		board[position] = playerNumber
+		var played = state.played
+		played.append(move)
+
 		var scores: Scores? = nil
 		if let scoringPlays = scorePlay(at: position, on: board, by: playerNumber) {
 			var newScores = state.scores
 			newScores[playerNumber, default: ScoringPlays()] += scoringPlays
 			scores = newScores
 		}
-		let playable = decidePlayableCellsGiven(board: board, stage: nextStage)
+
+		let nextPlayerNumber = chooseNextPlayer(afterPlayBy: playerNumber)
+		var nextStage = Stage.nextPlayBy(nextPlayerNumber)
 		nextStage =
 			finalStageIfGameHasEndedWith(scores: scores ?? state.scores, board: board,
 										 afterPlayBy: playerNumber, at: position)
 		 ?? nextStage
 
-		state = state.updating(stage: nextStage, board: board, playable: playable, scores: scores)
+		let playable = decidePlayableCellsGiven(board: board, stage: nextStage)
+
+		state = state.updating(stage: nextStage, board: board, playable: playable, played: played, scores: scores)
 
 		return .success(state)
 	}
@@ -296,9 +334,14 @@ public class Game : Codable, ObservableObject {
 
 	// MARK: - Rule implementations
 
-	func chooseInitialPlayer() -> PlayerNumber {
+	func chooseInitialPlayerGiven(played: State.Moves, scores: Scores) -> PlayerNumber {
 		switch config.chooseInitialPlayerBy {
-			case .player1:		return playerNumber(atIndex: 0)
+			case .player1:
+				var i = 0
+				if let n = played.first?.player {
+					i = indexOf(playerNumber: n + 1) % players.count
+				}
+				return playerNumber(atIndex: i)
 		}
 	}
 
@@ -314,7 +357,11 @@ public class Game : Codable, ObservableObject {
 		switch config.decidePlayableCellsBy {
 			case .unoccupied:
 				var playable = state.playable
-				playable.transformEach { board[$1] == Self.noPlayerNumber }
+				if stage.isFinished {
+					playable.resetTo(initialValue: false)
+				} else {
+					playable.transformEach { board[$1] == Self.noPlayerNumber }
+				}
 				return playable
 		}
 	}
@@ -493,11 +540,19 @@ extension Game.HowToScoreAMove : Codable {
 extension Game.Issue : CustomStringConvertible {
 	public var description: String { switch self {
 		case .notEnoughPlayers:								return "notEnoughPlayers"
+		case .notStarted:									return "notStarted"
 		case .alreadyStarted:								return "alreadyStarted"
 		case .notAPlayer:									return "notAPlayer"
 		case .notYourTurn:									return "notYourTurn"
 		case .cantPlayThere:								return "cantPlayThere"
 	} }
+}
+
+
+
+// MARK: -
+extension Game.Board.Move : Codable {
+	public init(_ n: Game.PlayerNumber, _ p: Game.Board.Position) { player = n ; position = p }
 }
 
 
