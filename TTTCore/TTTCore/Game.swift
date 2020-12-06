@@ -395,6 +395,19 @@ public class Game : Codable, ObservableObject {
 // MARK: -
 extension Game.Stage : Equatable, CustomStringConvertible, Codable {
 
+	@inlinable
+	public var isStarted: Bool { switch self {
+		case .nextPlayBy:									return true
+		default:											return false
+	} }
+
+	@inlinable
+	public var isFinished: Bool { switch self {
+		case .wonBy:										return true
+		case .drawn:										return true
+		default:											return false
+	} }
+
 	public var description: String { switch self {
 		case .waitingForPlayers:							return "waitingForPlayers"
 		case .waitingToStart:								return "readyToStart"
