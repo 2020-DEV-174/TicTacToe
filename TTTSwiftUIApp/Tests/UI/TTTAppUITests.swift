@@ -97,4 +97,50 @@ class TTTAppUITests: XCTestCase {
 			play(square: id, expect: result, hittable: items)
 		}
 	}
+
+	func test05_CanStartNewGame() {
+		func play(square id: String, expect value: String, hittable items: [String:Bool]) {
+			items.forEach {
+				let element = app.descendants(matching: .any)[$0.key]
+				XCTAssert(element.exists == $0.value, "\n    Expected \"\($0.key)\"\($0.value ?"":" not") to be hittable when about to play square \"\(id)\"\n")
+				XCTAssert(element.isHittable == $0.value, "\n    Expected \"\($0.key)\"\($0.value ?"":" not") to be hittable when about to play square \"\(id)\"\n")
+			}
+			let imageBefore = app.images[id]
+			XCTAssert(imageBefore.exists)
+			XCTAssert(imageBefore.isHittable)
+			XCTAssertEqual(imageBefore.value as? String, "Empty")
+			imageBefore.tap()
+			let imageAfter = app.images[id]
+			XCTAssertEqual(imageAfter.value as? String, value)
+		}
+		func play(moves: Int = .max) {
+			var move = 0
+			for (id, result, items) in [
+				("A1","X", ["New game":false]),
+				("A2","O", ["New game":true]),
+				("B1","X", ["New game":true]),
+				("B2","O", ["New game":true]),
+				("C1","X", ["New game":true]),
+				("C2","Empty", ["New game":true]),
+			] {
+				guard move < moves else { break }
+				play(square: id, expect: result, hittable: items)
+				move += 1
+			}
+		}
+		var newGame: XCUIElement
+		play()
+		newGame = app.descendants(matching: .any)["New game"]
+		newGame.tap()
+		play(moves: 4)
+		newGame = app.descendants(matching: .any)["New game"]
+		newGame.tap()
+		let abandonGame = app.alerts["Abandon game"]
+		XCTAssert(abandonGame.exists)
+		XCTAssert(abandonGame.isHittable)
+		let confirm = abandonGame.buttons["Confirm"]
+		XCTAssert(confirm.isHittable)
+		confirm.tap()
+		play()
+	}
 }
