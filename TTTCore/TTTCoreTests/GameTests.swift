@@ -211,4 +211,61 @@ class GameTests: XCTestCase {
 		XCTAssertEqual(game2.state.playable.count(of: true), game2.state.board.count - 1)
 	}
 
+	func testCanStartAnotherGame() {
+		let game = GameManager.createGame()
+		let player1 = game.addPlayer(Game.Player("Player 1"))
+		let player2 = game.addPlayer(Game.Player("Player 2"))
+		while game.stage == .waitingForPlayers {
+			_ = game.addPlayer(Game.Player("\(game.players.count)"))
+		}
+		var result: Result<Game.State, Game.Issue>
+		result = game.start()
+		guard case .success = result else {
+			XCTFail("Game start prevented by \(result)")
+			return
+		}
+		func play(moves: Int = .max) {
+			let player1starts: Bool
+			if case .nextPlayBy(player1) = game.stage { player1starts = true } else { player1starts = false }
+			let p1 = player1starts ? player1 : player2
+			let p2 = player1starts ? player2 : player1
+			var move = 0
+			for (player, position) in [
+				(p1, [0,0]), (p2, [2,0]),
+				(p1, [0,1]), (p2, [2,1]),
+				(p1, [2,2]), (p2, [0,2]),
+				(p1, [1,1])
+			] {
+				guard move < moves else { break }
+				move += 1
+				result = game.play(player, at: position)
+				guard case .success = result else {
+					XCTFail("Player \(player) move at \(position) prevented because \(result)")
+					return
+				}
+			}
+		}
+
+		let moves = 3
+		play(moves: moves)
+		XCTAssertEqual(game.state.board.count - moves, game.state.playable.count(of: true))
+		result = game.restart()
+		guard case .success = result else {
+			XCTFail("Game restart prevented by \(result)")
+			return
+		}
+		XCTAssertEqual(game.stage, .nextPlayBy(1))
+		XCTAssertEqual(game.state.board.count, game.state.playable.count(of: true))
+		play()
+		XCTAssertEqual(game.stage, .wonBy(1))
+		XCTAssertEqual(0, game.state.playable.count(of: true))
+		result = game.start()
+		guard case .success = result else {
+			XCTFail("Start new game prevented by \(result)")
+			return
+		}
+		if case .nextPlayBy = game.stage {} else { XCTFail("Expected game at stage .nextPlayBy, but stage is \(game.stage)")}
+		XCTAssertEqual(game.state.board.count, game.state.playable.count(of: true))
+	}
+
 }
