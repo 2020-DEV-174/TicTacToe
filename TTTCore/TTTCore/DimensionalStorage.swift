@@ -41,6 +41,15 @@ public struct DimensionalStorage<Element> {
 		increments = d.map { let i = increment; increment *= $0 ; return i }
 	}
 
+	public mutating func resetTo(initialValue v: Element) {
+		resetTo(initialValues: [Element](repeating: v, count: storage.count))
+	}
+
+	public mutating func resetTo(initialValues v: [Element]) {
+		precondition(v.count == storage.count, "Initial values have count (\(v.count)) incompatible with storage (\(storage.count))")
+		storage.replaceSubrange(storage.indices, with: v)
+	}
+
 	// Element Addressing: Indeces <-> Positions
 
 	public func indexOf(position: Position) -> Index {
