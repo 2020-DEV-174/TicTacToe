@@ -375,7 +375,7 @@ public class Game : Codable, ObservableObject {
 		switch config.scoreAMoveBy {
 			case .line(let length):
 				var scoringPlays = ScoringPlays()
-				let directions: [[Board.Storage.Move]] = [[.ascend,.fixed],[.ascend,.ascend],[.fixed,.ascend]]
+				let directions: [[Board.Storage.Move]] = [[.ascend,.fixed],[.fixed,.ascend],[.ascend,.ascend],[.ascend,.descend]]
 				for direction in directions {
 					let line = board.storage.positions(moving: direction, through: position)
 					guard line.count == length
