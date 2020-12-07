@@ -20,27 +20,27 @@ class GameTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-	func testCanMakeNewGame() throws {
+	func test01_CanMakeNewGame() throws {
 		XCTAssertNotNil(GameManager.createGame())
 	}
 
-	func testGameSuppliesRules() throws {
+	func test02_GameSuppliesRules() throws {
 		let game = GameManager.createGame()
 		XCTAssert(!game.config.informationForPlayers.isEmpty)
 	}
 
-	func testGameSpecifiesPlayerCountRange() throws {
+	func test03_GameSpecifiesPlayerCountRange() throws {
 		let game = GameManager.createGame()
 		XCTAssert(0 < game.config.minPlayers && game.config.minPlayers <= game.config.maxPlayers)
 	}
 
-	func testGameAcceptsOnePlayer() throws {
+	func test04_GameAcceptsOnePlayer() throws {
 		let game = GameManager.createGame()
 		let playerNumber = game.addPlayer(Game.Player("2020-DEV-174"))
 		XCTAssertNotEqual(playerNumber, Game.noPlayerNumber)
 	}
 
-	func testGameAcceptsMaximumPlayers() throws {
+	func test05_GameAcceptsMaximumPlayers() throws {
 		let game = GameManager.createGame()
 		var count = game.config.maxPlayers
 		var playerNumber = Game.noPlayerNumber
@@ -53,7 +53,7 @@ class GameTests: XCTestCase {
 		XCTAssertEqual(playerNumber, Game.noPlayerNumber, "Player added after maximum count")
 	}
 
-	func testGameStageShouldBeWaitingUntilThereAreEnoughPlayers() {
+	func test06_GameStageShouldBeWaitingUntilThereAreEnoughPlayers() {
 		let game = GameManager.createGame()
 		var count = game.config.minPlayers
 		while count > 0 {
@@ -64,7 +64,7 @@ class GameTests: XCTestCase {
 		XCTAssertNotEqual(game.stage, Game.Stage.waitingForPlayers)
 	}
 
-	func testGameStageEquatability() {
+	func test07_GameStageEquatability() {
 		let a: [Game.Stage] = [.waitingForPlayers, .waitingToStart, .nextPlayBy(0), .nextPlayBy(1), .wonBy(0), .wonBy(1), .drawn]
 		let b: [Game.Stage]
 		switch a.randomElement()! {
@@ -79,7 +79,7 @@ class GameTests: XCTestCase {
 		}
 	}
 
-	func testGameCanStartOnlyWhenReady() {
+	func test08_GameCanStartOnlyWhenReady() {
 		let game = GameManager.createGame()
 		while game.stage == .waitingForPlayers {
 			let result1 = game.start()
@@ -98,7 +98,7 @@ class GameTests: XCTestCase {
 		}
 	}
 
-	func testGameStateOfStartedGameIsEmptyBoardWithFirstPlayerToPlayAnywhere() {
+	func test09_GameStateOfStartedGameIsEmptyBoardWithFirstPlayerToPlayAnywhere() {
 		let game = GameManager.createGame()
 		while game.stage == .waitingForPlayers {
 			_ = game.addPlayer(Game.Player("\(game.players.count)"))
@@ -114,7 +114,7 @@ class GameTests: XCTestCase {
 		XCTAssertEqual(state.playable.count(of: true), state.board.count)
 	}
 
-	func testPlayer1PlaysFirstMoveinFirstSquareGivesStateWithFirstSquareOccupiedByPlayer1() {
+	func test10_Player1PlaysFirstMoveinFirstSquareGivesStateWithFirstSquareOccupiedByPlayer1() {
 		let game = GameManager.createGame()
 		let player1 = game.addPlayer(Game.Player("Player 1"))
 		let player2 = game.addPlayer(Game.Player("Player 2"))
@@ -141,7 +141,7 @@ class GameTests: XCTestCase {
 		XCTAssertEqual(state.board[position], player1, "Board square not occupied by player that played there")
 	}
 
-	func testPlayer1PlaysFirstMoveinSquare1GivesStateWaitingForPlayer2AndAllButFirstSquarePlayable() {
+	func test11_Player1PlaysFirstMoveinSquare1GivesStateWaitingForPlayer2AndAllButFirstSquarePlayable() {
 		let game = GameManager.createGame()
 		let player1 = game.addPlayer(Game.Player("Player 1"))
 		let player2 = game.addPlayer(Game.Player("Player 2"))
@@ -169,7 +169,7 @@ class GameTests: XCTestCase {
 		XCTAssertEqual(state.playable.count(of: true), state.board.count - 1)
 	}
 
-	func testGameCanBeSavedAndRestored() {
+	func test12_GameCanBeSavedAndRestored() {
 		let game = GameManager.createGame()
 		let player1 = game.addPlayer(Game.Player("Player 1"))
 		let player2 = game.addPlayer(Game.Player("Player 2"))
@@ -211,7 +211,7 @@ class GameTests: XCTestCase {
 		XCTAssertEqual(game2.state.playable.count(of: true), game2.state.board.count - 1)
 	}
 
-	func testCanStartAnotherGame() {
+	func test13_CanStartAnotherGame() {
 		let game = GameManager.createGame()
 		let player1 = game.addPlayer(Game.Player("Player 1"))
 		let player2 = game.addPlayer(Game.Player("Player 2"))

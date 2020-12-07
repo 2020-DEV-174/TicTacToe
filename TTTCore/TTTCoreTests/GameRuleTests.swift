@@ -21,18 +21,18 @@ class GameRuleTests: XCTestCase {
 		// Put teardown code here. This method is called after the invocation of each test method in the class.
 	}
 
-	func testNeedsTwoPlayers() {
+	func test01_NeedsTwoPlayers() {
 		let game = GameManager.createGame()
 		XCTAssertEqual(game.config.minPlayers, 2)
 		XCTAssertEqual(game.config.maxPlayers, 2)
 	}
 
-	func testBoardSizeIs3x3() {
+	func test02_BoardSizeIs3x3() {
 		let game = GameManager.createGame()
 		XCTAssertEqual(game.state.board.dimensions, [3,3])
 	}
 
-	func testPlayRotatesFromPlayer1() {
+	func test03_PlayRotatesFromPlayer1() {
 		let game = GameManager.createGame()
 		let player1 = game.addPlayer("Player 1")
 		let player2 = game.addPlayer("Player 2")
@@ -73,7 +73,7 @@ class GameRuleTests: XCTestCase {
 		}
 	}
 
-	func testPlayerCanPlayAnyUnoccupiedCell() {
+	func test04_PlayerCanPlayAnyUnoccupiedCell() {
 		let (game, player1, player2) = createAStartedTwoPlayerGame()
 
 		//
@@ -98,7 +98,7 @@ class GameRuleTests: XCTestCase {
 			in: game, with: testPlayableNotEqualOccupied)
 	}
 
-	func testPlayerScoresByOccupyingThreeCellsInAHorizontalLine() {
+	func test05_PlayerScoresByOccupyingThreeCellsInAHorizontalLine() {
 		let (game, player1, player2) = createAStartedTwoPlayerGame()
 
 		// [ x x x
@@ -115,7 +115,7 @@ class GameRuleTests: XCTestCase {
 		}
 	}
 
-	func testPlayerScoresByOccupyingThreeCellsInAVerticalLine() {
+	func test06_PlayerScoresByOccupyingThreeCellsInAVerticalLine() {
 		let (game, player1, player2) = createAStartedTwoPlayerGame()
 
 		// [ x o -
@@ -132,7 +132,7 @@ class GameRuleTests: XCTestCase {
 		}
 	}
 
-	func testPlayerScoresByOccupyingThreeCellsInADiagonalAndVerticalLine() {
+	func test07_PlayerScoresByOccupyingThreeCellsInADiagonalAndVerticalLine() {
 		func replayTest(withtransform tx: TransformPosition, called name: String) {
 			let (game, player1, player2) = createAStartedTwoPlayerGame()
 
@@ -173,7 +173,7 @@ class GameRuleTests: XCTestCase {
 		}
 	}
 
-	func testFirstPlayerToScoreWins() {
+	func test08_FirstPlayerToScoreWins() {
 		let (game, player1, player2) = createAStartedTwoPlayerGame()
 
 		// [ x x x
@@ -193,7 +193,7 @@ class GameRuleTests: XCTestCase {
 		XCTAssertEqual(game.state.stage, .wonBy(player1), "\n    Expected player \(player1) to have won; stage is instead \(game.state.stage)\n")
 	}
 
-	func testGameDrawnWhenAllSquaresOccupiedWithoutAWin() {
+	func test09_GameDrawnWhenAllSquaresOccupiedWithoutAWin() {
 		let (game, player1, player2) = createAStartedTwoPlayerGame()
 
 		// [ o x x

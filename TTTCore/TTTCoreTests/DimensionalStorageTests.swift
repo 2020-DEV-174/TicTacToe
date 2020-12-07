@@ -21,7 +21,7 @@ class DimensionalStorageTests: XCTestCase {
 		// Put teardown code here. This method is called after the invocation of each test method in the class.
 	}
 
-	func testCountReflectsDimensions() throws {
+	func test01_CountReflectsDimensions() throws {
 		typealias Element = Int
 		let dimensions = [3,3]
 		let count = dimensions.reduce(1, *)
@@ -31,7 +31,7 @@ class DimensionalStorageTests: XCTestCase {
 		XCTAssertEqual(storage.count, count)
 	}
 
-	func testPositionsConsistentWithIndeces() {
+	func test02_PositionsConsistentWithIndeces() {
 		let storage = DimensionalStorage<Int>(dimensions: [3,4])
 		var indecesVisited = Set<Int>()
 		var position = [0,0]
@@ -53,7 +53,7 @@ class DimensionalStorageTests: XCTestCase {
 		XCTAssertEqual(storage.count, indecesVisited.count, "Duplicate indeces or incomplete traversal")
 	}
 
-	func testIndecesConsistentWithPositions() {
+	func test03_IndecesConsistentWithPositions() {
 
 		func test(with dimensions: [Int]) {
 			let storage = DimensionalStorage<Int>(dimensions: dimensions)
@@ -77,7 +77,7 @@ class DimensionalStorageTests: XCTestCase {
 		test(with: [3,4,5])
 	}
 
-	func testAccessExpectedValuesByPosition() {
+	func test04_AccessExpectedValuesByPosition() {
 
 		func test(with dimensions: [Int]) {
 			let count = dimensions.reduce(1, *)
@@ -99,7 +99,7 @@ class DimensionalStorageTests: XCTestCase {
 		test(with: [3,4,5])
 	}
 
-	func testWriteReadConsistency() {
+	func test05_WriteReadConsistency() {
 
 		var storage = DimensionalStorage<Int>(dimensions: [3,4])
 
@@ -111,7 +111,7 @@ class DimensionalStorageTests: XCTestCase {
 		}
 	}
 
-	func testTraversePositionsAlongLineThroughPosition() {
+	func test06_TraversePositionsAlongLineThroughPosition() {
 
 		let storage = DimensionalStorage<Int>(dimensions: [3,3])
 
@@ -146,7 +146,7 @@ class DimensionalStorageTests: XCTestCase {
 		test(anchor: [0,0], direction: [.descend, .descend], expect: [8,4,0])
 	}
 
-	func testResetToInitialValues() {
+	func test07_ResetToInitialValues() {
 
 		var storage = DimensionalStorage<Int>(dimensions: [3,3])
 		XCTAssert(storage.count == storage.count(of: 0))

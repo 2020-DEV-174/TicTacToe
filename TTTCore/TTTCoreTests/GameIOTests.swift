@@ -25,7 +25,7 @@ class GameIOTests: XCTestCase {
 		keepAlive.removeAll()
 	}
 
-	func testGameStateChangeArePublished() {
+	func test01_GameStateChangeArePublished() {
 		let game = GameManager.createGame()
 		let initialState = game.state
 		var receivedState = initialState
@@ -47,7 +47,7 @@ class GameIOTests: XCTestCase {
 		XCTAssertEqual(receivedState.board[position], player1)
 	}
 
-	func testGameCanListenToPlayerHosts() {
+	func test02_GameCanListenToPlayerHosts() {
 		let game = GameManager.createGame()
 		let subject = PassthroughSubject<Game.PlayerHostMessage, Never>().eraseToAnyPublisher()
 		let result = game.addPlayerHost(subject)
@@ -56,7 +56,7 @@ class GameIOTests: XCTestCase {
 		}
 	}
 
-	func testPlayerHostCanAddPlayer() {
+	func test03_PlayerHostCanAddPlayer() {
 		let game = GameManager.createGame()
 		let subject = PassthroughSubject<Game.PlayerHostMessage, Never>()
 		let result = game.addPlayerHost(subject.eraseToAnyPublisher())
@@ -67,7 +67,7 @@ class GameIOTests: XCTestCase {
 		XCTAssertNotNil(game.players.first(where: { $0.tag == tag }))
 	}
 
-	func testPlayerHostCanStartAGame() {
+	func test04_PlayerHostCanStartAGame() {
 		let game = GameManager.createGame()
 		let subject = PassthroughSubject<Game.PlayerHostMessage, Never>()
 		let result = game.addPlayerHost(subject.eraseToAnyPublisher())
@@ -84,7 +84,7 @@ class GameIOTests: XCTestCase {
 		XCTAssertEqual(game.stage, .nextPlayBy(1))
 	}
 
-	func testPlayerHostCanPlayAMove() {
+	func test05_PlayerHostCanPlayAMove() {
 		let game = GameManager.createGame()
 		let subject = PassthroughSubject<Game.PlayerHostMessage, Never>()
 		let result = game.addPlayerHost(subject.eraseToAnyPublisher())
@@ -104,7 +104,7 @@ class GameIOTests: XCTestCase {
 		XCTAssertEqual(game.state.board[position], game.playerNumber(withTag: tag1))
 	}
 
-	func testPlayerHostCanStartAnotherGame() {
+	func test06_PlayerHostCanStartAnotherGame() {
 		let game = GameManager.createGame()
 		let subject = PassthroughSubject<Game.PlayerHostMessage, Never>()
 		let result = game.addPlayerHost(subject.eraseToAnyPublisher())
