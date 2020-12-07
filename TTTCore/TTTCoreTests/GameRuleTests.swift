@@ -61,11 +61,12 @@ class GameRuleTests: XCTestCase {
 	}
 
 	typealias PlayerMove = (Game.PlayerNumber, Game.Board.Storage.Index)
-	func play(moves s: [PlayerMove], in game: Game, with test: (_ move: PlayerMove)->()) {
+	typealias TransformPosition = (Game.Board.Position)->Game.Board.Position
+	func play(moves s: [PlayerMove], transformedBy transform: TransformPosition = {$0}, in game: Game, with test: (_ move: PlayerMove)->()) {
 		var outcome: Game.Outcome
 		let playingSpace = game.state.playable
 		for move in s {
-			let player = move.0, position = playingSpace.positionOf(index: move.1)
+			let player = move.0, position = transform(playingSpace.positionOf(index: move.1))
 			outcome = game.play(player, at: position)
 			XCTAssertNotNil(try? outcome.get(), "\n   Player \(player) could not play \(position): \(outcome)\n")
 			test(move)
@@ -132,21 +133,43 @@ class GameRuleTests: XCTestCase {
 	}
 
 	func testPlayerScoresByOccupyingThreeCellsInADiagonalAndVerticalLine() {
-		let (game, player1, player2) = createAStartedTwoPlayerGame()
+		func replayTest(withtransform tx: TransformPosition, called name: String) {
+			let (game, player1, player2) = createAStartedTwoPlayerGame()
 
-		// [ x o o
-		//   x x o
-		//   x o x ]
-		play(moves: [
-			(player1, 4), (player2, 2),
-			(player1, 3), (player2, 5),
-			(player1, 8), (player2, 7),
-			(player1, 6), (player2, 1),
-			(player1, 0)
-		], in: game) { move in
-			let expectScore = move.1 == 0
-			XCTAssertEqual(expectScore, !game.state.scores.isEmpty, "\n    Unexpected scoring when playing cell \(move.1)\n")
-			XCTAssertEqual(game.state.scores, expectScore ? [player1:[[[0,0],[1,1],[2,2]],[[0,0],[0,1],[0,2]]]] : [:], "\n    Unexpected scoring when playing cell \(move.1)\n")
+			// [ x o o
+			//   x x o
+			//   x o x ]
+			play(moves: [
+				(player1, 4), (player2, 2),
+				(player1, 3), (player2, 5),
+				(player1, 8), (player2, 7),
+				(player1, 6), (player2, 1),
+				(player1, 0)
+			], transformedBy: tx, in: game) { move in
+				let expectScore = move.1 == 0
+				XCTAssertEqual(expectScore, !game.state.scores.isEmpty, "\n    Unexpected scoring when playing cell \(move.1)\n")
+				if expectScore {
+					typealias ScoringCombination = Set<Game.Board.Position>
+					typealias ScoringPlays = Set<ScoringCombination>
+					let scoresHave = game.state.scores.mapValues { ScoringPlays($0.map({ScoringCombination($0)})) }
+					let scoresExpect = [player1:ScoringPlays([
+						ScoringCombination([[0,0],[1,1],[2,2]].map(tx)),
+						ScoringCombination([[0,0],[0,1],[0,2]].map(tx))
+					])]
+					XCTAssertEqual(scoresHave, scoresExpect, "\n    Unexpected scoring when playing cell \(move.1) with \(name) transform\n")
+				} else {
+					XCTAssert(game.state.scores.isEmpty)
+				}
+			}
+		}
+		let transforms: [(name:String, tx:TransformPosition)] = [
+			("identity",		{ $0 }						),
+			("flip vertical",	{ [ $0[0],    2-$0[1]] }	),
+			("flip horizontal",	{ [ 2-$0[0],  $0[1]]   }	),
+			("rotate right",	{ [ 2-$0[1],  $0[0]]   }	),
+		]
+		transforms.forEach {
+			replayTest(withtransform: $0.tx, called: $0.name)
 		}
 	}
 
